@@ -1,0 +1,8 @@
+本体 (The four primitives and Weapons) のJARファイルをこのフォルダに置いてください。
+
+手順:
+  1. 本体プロジェクトで ./gradlew build を実行
+  2. build/libs/ に生成された JAR ファイルをここにコピー
+  3. build.gradle の compileOnly fileTree(...) のコメントを解除
+
+※ JARを置かずにビルドしたい場合は CurseMaven 方式を使用してください（build.gradle 参照）。

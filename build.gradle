@@ -1,0 +1,92 @@
+buildscript {
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+    }
+}
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'eclipse'
+
+// =====================================================================
+// アドオン情報 — ここを編集してください
+// =====================================================================
+version = '1.0.0'
+group   = 'com.example.mawaddon'          // 自分のグループIDに変更
+archivesBaseName = 'maw-sample-addon'     // JARファイル名
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+def mc_version    = '1.20.1'
+def forge_version = '1.20.1-47.1.0'
+
+minecraft {
+    mappings channel: 'official', version: mc_version
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers',        'REGISTRIES'
+            property 'forge.logging.console.level',  'debug'
+            mods {
+                // このアドオンのmod設定
+                maw_sample_addon { source sourceSets.main }
+            }
+        }
+        server {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers',        'REGISTRIES'
+            property 'forge.logging.console.level',  'debug'
+            mods {
+                maw_sample_addon { source sourceSets.main }
+            }
+        }
+    }
+}
+
+repositories {
+    // 本体JARをlibsフォルダから参照する場合はこちら（デフォルト）
+    // flatDir { dirs 'libs' }
+
+    // CurseMaven — Farmer's Delight など CurseForge 公開 mod を参照する場合
+    maven { url 'https://www.cursemaven.com' }
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${forge_version}"
+
+    // =====================================================================
+    // 本体 (The four primitives and Weapons) への依存
+    //
+    // 方法A — ローカルJAR（推奨・手軽）
+    //   1. 本体を ./gradlew build でビルド
+    //   2. 生成されたJARを libs/ フォルダに置く
+    //   3. 下記コメントを解除する
+    // =====================================================================
+    // compileOnly fileTree(dir: 'libs', include: '*.jar')
+
+    // 方法B — CurseMaven（プロジェクトID: 本体のCurseForgeプロジェクトID）
+    // compileOnly fg.deobf('curse.maven:the-four-primitives-and-weapons-XXXXXXX:YYYYYY')
+
+    // =====================================================================
+    // Farmer's Delight — オプション依存（なくてもビルド可能）
+    //
+    // 下記のファイルIDは CurseForge の Farmer's Delight 1.20.1 最新版に合わせて
+    // https://www.curseforge.com/minecraft/mc-mods/farmers-delight/files
+    // から確認・更新してください。
+    // =====================================================================
+    compileOnly fg.deobf('curse.maven:farmers-delight-398521:4588498')
+}
+
+processResources {
+    inputs.property 'mc_version', mc_version
+    filesMatching('META-INF/mods.toml') {
+        expand 'mc_version': mc_version
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}

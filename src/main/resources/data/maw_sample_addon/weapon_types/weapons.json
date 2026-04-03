@@ -1,0 +1,34 @@
+{
+  "_comment": [
+    "MAW Sample Addon — 武器タイプ宣言ファイル",
+    "このファイルは WeaponTypeRegistry が自動的に読み込みます。",
+    "先頭が _ のファイルは無視されます。",
+    "",
+    "【このファイルの役割】",
+    "  1. maw_sample_addon:dagger を既存の 'dagger' タイプに追加",
+    "  2. Farmer's Delight のナイフ5種を 'dagger' タイプに追加",
+    "     (FD が導入されていない場合、該当アイテムが存在しないだけで問題なし)",
+    "",
+    "【ポイント】",
+    "  - 既存タイプに items を追加する場合: タイプIDを合わせて items のみ書けばよい",
+    "  - motions を省略すると既存の motions がそのまま使われる",
+    "  - 新しいタイプを作る場合: 新しいタイプIDと motions を両方定義する"
+  ],
+
+  "types": {
+
+    "dagger": {
+      "display_name": "短剣",
+      "items": [
+        "maw_sample_addon:dagger",
+
+        "farmersdelight:flint_knife",
+        "farmersdelight:iron_knife",
+        "farmersdelight:golden_knife",
+        "farmersdelight:diamond_knife",
+        "farmersdelight:netherite_knife"
+      ]
+    }
+
+  }
+}

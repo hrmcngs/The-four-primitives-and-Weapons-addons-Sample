@@ -1,0 +1,6 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "maw_sample_addon:item/dagger"
+  }
+}
