@@ -77,7 +77,7 @@ dependencies {
     // https://www.curseforge.com/minecraft/mc-mods/farmers-delight/files
     // から確認・更新してください。
     // =====================================================================
-    compileOnly fg.deobf('curse.maven:farmers-delight-398521:4588498')
+    // compileOnly fg.deobf('curse.maven:farmers-delight-398521:4588498')
 }
 
 processResources {
@@ -86,6 +86,9 @@ processResources {
         expand 'mc_version': mc_version
     }
 }
+
+// リソースとクラスを同じディレクトリに出力（モジュール競合回避）
+sourceSets.main.output.resourcesDir = sourceSets.main.java.classesDirectory
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'

@@ -73,6 +73,13 @@ compileOnly fileTree(dir: 'libs', include: '*.jar')
 
 `build/libs/` にJARが生成されます。
 
+### スクリプトで実行
+
+```bash
+bash build.sh          # 通常ビルド
+bash run_client.sh     # テストプレイ（Minecraft クライアント起動）
+```
+
 ---
 
 ## 武器タイプ登録（weapon_types JSON）

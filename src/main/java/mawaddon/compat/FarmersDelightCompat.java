@@ -125,7 +125,7 @@ public class FarmersDelightCompat {
             case 2 -> 10;
             default -> 15;
         };
-        victim.giveExperiencePoints(xpBonus);
+        player.giveExperiencePoints(xpBonus);
 
         if (aiLevel < 2) return;
 
