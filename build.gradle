@@ -4,7 +4,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '[6.0,6.2)', changing: true
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
@@ -30,18 +30,11 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers',        'REGISTRIES'
             property 'forge.logging.console.level',  'debug'
-            mods {
-                // このアドオンのmod設定
-                maw_sample_addon { source sourceSets.main }
-            }
         }
         server {
             workingDirectory project.file('run')
             property 'forge.logging.markers',        'REGISTRIES'
             property 'forge.logging.console.level',  'debug'
-            mods {
-                maw_sample_addon { source sourceSets.main }
-            }
         }
     }
 }
