@@ -27,8 +27,10 @@ src/main/resources/
 │       ├── sample_sword.json         サンプル剣モデル
 │       └── dagger.json               ダガーモデル
 └── data/maw_sample_addon/
-    └── weapon_types/
-        └── weapons.json              ★ 武器タイプ宣言（最重要）
+    ├── weapon_types/
+    │   └── weapons.json              ★ 武器タイプ宣言（最重要）
+    └── maw_saya/
+        └── saya.json                 ★ 鞘(納刀)対象アイテム宣言
 ```
 
 ## セットアップ手順
@@ -140,6 +142,66 @@ bash run_client.sh     # テストプレイ（Minecraft クライアント起動
 ```
 
 > **ファイル名の注意**: `_` で始まるファイルは読み込まれません（本体の `_template_for_addons.json` 参照）。
+
+---
+
+## 鞘(saya) への納刀登録（maw_saya JSON）
+
+本体の `SayaRegistry` はサーバー起動時に **全MODの** `data/*/maw_saya/*.json` を自動収集します。
+アドオンはJavaコードなしに、JSONを置くだけで自分のアイテムを納刀対象にできます。
+
+### フォーマット
+
+```json
+// data/your_mod/maw_saya/saya.json
+{
+  "katana":  { "your_mod:custom_katana": 1 },
+  "tyokuto": { "your_mod:custom_tyokuto": 4 },
+  "sword":   { "your_mod:custom_sword": 1 }
+}
+```
+
+| キー | 対象サヤ | 説明 |
+|---|---|---|
+| `katana` | 本体の `saya` | 通常の刀の鞘 |
+| `tyokuto` | 本体の `tyokuto_saya` | 直刀の鞘 |
+| `sword` | 本体の `sword_saya` | バニラ剣ベースの鞘 |
+
+値は本体 `assets/.../models/item/saya.json` (および tyokuto_saya / sword_saya) の
+`overrides` で定義された `custom_model_data` です。
+**既存のスロット番号を流用すれば本体に同梱されている鞘モデルをそのまま使えます**。
+
+| サヤ | 既存スロット例 |
+|---|---|
+| katana | 1=iron, 2=gold, 3=stone, 4=netherite, 16=diamond, ... |
+| tyokuto | 4=iron, 5=gold, 6=stone, 7=diamond, 8=netherite |
+| sword | 1=iron, 2=gold, 3=stone, 4=diamond, 5=netherite |
+
+### 独自の鞘モデルを出したい場合
+
+本体の `saya.json` を上書きするリソースパック差分を自分のMODに含めて、
+新しい `custom_model_data` 番号のエントリと対応モデルを追加してください。
+同じ番号を別MODが先に登録していると衝突する点に注意。
+
+**モデルファイルの配置先 (規約)** — 本体MODと同じ階層構造を踏襲してください:
+
+```
+assets/your_mod/models/custom/saya/katana/saya_xxx.json    # 通常の刀の鞘
+assets/your_mod/models/custom/saya/tyokuto/saya_xxx.json   # 直刀の鞘
+assets/your_mod/models/custom/saya/sword/saya_xxx.json     # バニラ剣の鞘
+```
+
+本体の `saya.json` overrides を上書きする際の `model` 値の例:
+
+```json
+{
+  "predicate": { "custom_model_data": 20 },
+  "model": "your_mod:custom/saya/katana/saya_your_katana"
+}
+```
+
+> **ファイル名・パス規約** — 本体MODの命名: `saya_<weapon_name>.json` (通常刀), `saya_<weapon_name>_tyokuto.json` (直刀), `saya_sword_<weapon_name>.json` (バニラ剣ベース)。
+> アドオン側も同じ命名にしておくと、本体・他アドオンと衝突しにくく分かりやすいです。
 
 ---
 

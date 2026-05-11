@@ -3,7 +3,7 @@ loaderVersion="[43,)"
 license="MIT"
 
 [[mods]]
-modId="maw_sample_addon"
+modId="minecraft_armor_weapon_sample"
 version="1.0.0"
 displayName="MAW Sample Addon"
 description='''
@@ -15,7 +15,7 @@ authors="YourName"
 # ===== 依存関係 =====
 
 # Minecraft 本体
-[[dependencies.maw_sample_addon]]
+[[dependencies.minecraft_armor_weapon_sample]]
     modId="minecraft"
     mandatory=true
     versionRange="[1.20.1]"
@@ -23,7 +23,7 @@ authors="YourName"
     side="BOTH"
 
 # Forge
-[[dependencies.maw_sample_addon]]
+[[dependencies.minecraft_armor_weapon_sample]]
     modId="forge"
     mandatory=true
     versionRange="[47,)"
@@ -32,7 +32,7 @@ authors="YourName"
 
 # 本体: The four primitives and Weapons（必須依存）
 # BEFOREにするとアドオンが本体より後にロードされる（推奨）
-[[dependencies.maw_sample_addon]]
+[[dependencies.minecraft_armor_weapon_sample]]
     modId="minecraft_armor_weapon"
     mandatory=true
     versionRange="[1.0.0,)"
@@ -40,7 +40,7 @@ authors="YourName"
     side="BOTH"
 
 # Farmer's Delight（オプション依存 — なくても動作する）
-[[dependencies.maw_sample_addon]]
+[[dependencies.minecraft_armor_weapon_sample]]
     modId="farmersdelight"
     mandatory=false
     versionRange="[1.0.0,)"
