@@ -1,8 +1,21 @@
-本体 (The four primitives and Weapons) のJARファイルをこのフォルダに置いてください。
+本体 (The four primitives and Weapons) のJARファイルを下記パスに置いてください:
+
+  libs/local/the_four_primitives_and_weapons/<version>/the_four_primitives_and_weapons-<version>.jar
+
+例 (build.gradle のデフォルト):
+  libs/local/the_four_primitives_and_weapons/1.20.1-test/the_four_primitives_and_weapons-1.20.1-test.jar
+
+build.gradle の `def maw_artifact` / `def maw_version` を上のフォルダ名・
+ファイル名と一致させること。
 
 手順:
   1. 本体プロジェクトで ./gradlew build を実行
-  2. build/libs/ に生成された JAR ファイルをここにコピー
-  3. build.gradle の compileOnly fileTree(...) のコメントを解除
+  2. build/libs/ に生成された JAR ファイルを上記パスにコピー
+     (本体プロジェクトを $HOME/The-four-primitives-and-Weapons に置いて
+      おけば run_client.sh / run_client.bat が自動でコピーする)
+  3. ./gradlew runClient を実行すれば本体MODが自動でロードされる
 
-※ JARを置かずにビルドしたい場合は CurseMaven 方式を使用してください（build.gradle 参照）。
+前提MOD (Curios / GeckoLib / JEI / Farmer's Delight) は build.gradle が
+Maven / CurseMaven から自動取得するので libs/ に置く必要はありません。
+Farmer's Delight の CurseForge fileId は build.gradle 内の
+`farmers_delight_file_id` を書き換えてください。

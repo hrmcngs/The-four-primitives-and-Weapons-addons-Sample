@@ -19,58 +19,158 @@ archivesBaseName = 'maw-sample-addon'     // JARファイル名
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
+// =====================================================================
+// バージョン定義
+//
+// バージョン値は本体MOD「The four primitives and Weapons」の
+// build.gradle / mcreator.gradle に合わせてあります。本体MODの
+// 前提modバージョンを変更したらここも揃えてください。
+// =====================================================================
 def mc_version    = '1.20.1'
 def forge_version = '1.20.1-47.1.0'
+
+// 本体MOD (libs/local/... に配置するjarの artifact 名とバージョン)
+//   ファイル名は ${maw_artifact}-${maw_version}.jar になる。
+//   例: the_four_primitives_and_weapons-1.20.1-test.jar
+def maw_artifact      = 'the_four_primitives_and_weapons'
+def maw_version       = '1.20.1-test'
+
+// =====================================================================
+// 本体MOD jar の自動取り込み
+//   ↓のパスに本体MODのソースプロジェクトがあれば、
+//   そこの build/libs/ から最新jarを自動で libs/local/ にコピーする。
+//   コピー先ファイル名は maw_artifact + maw_version で固定。
+//   他環境では gradle.properties に
+//     mawSourceProject=/path/to/The-four-primitives-and-Weapons
+//   で上書き可能。プロジェクトが見つからなければ静かにスキップ。
+// =====================================================================
+def mawSourceProject = project.findProperty('mawSourceProject')
+        ?: "${System.getProperty('user.home')}/The-four-primitives-and-Weapons"
+def mawDestDir = file("libs/local/${maw_artifact}/${maw_version}")
+def mawDestFile = new File(mawDestDir, "${maw_artifact}-${maw_version}.jar")
+def mawSourceJarDir = file("${mawSourceProject}/build/libs")
+if (mawSourceJarDir.exists()) {
+    def latestJar = mawSourceJarDir.listFiles()
+            .findAll { it.name.endsWith('.jar')
+                       && !it.name.contains('-sources')
+                       && !it.name.contains('-dev')
+                       && !it.name.contains('-javadoc') }
+            .max { it.lastModified() }
+    if (latestJar != null && (!mawDestFile.exists() || latestJar.lastModified() > mawDestFile.lastModified())) {
+        mawDestDir.mkdirs()
+        mawDestFile.bytes = latestJar.bytes
+        println "[addon] 本体MOD jar を取り込みました: ${latestJar.name} → ${mawDestFile.name}"
+    }
+} else {
+    if (!mawDestFile.exists()) {
+        logger.warn("[addon] 本体MOD ソース ${mawSourceProject} が見つからず、libs/local にもjarが無い。")
+        logger.warn("[addon] 本体MODを ${mawSourceProject} に置くか、libs/local/${maw_artifact}/${maw_version}/ に手動でjarを置いてください。")
+    }
+}
+
+// 前提MOD（本体MODと同じバージョンに揃える）
+def curios_version    = '5.10.0+1.20.1'
+def geckolib_version  = '4.7.3'
+def jei_version       = '15.20.0.129'
 
 minecraft {
     mappings channel: 'official', version: mc_version
 
+    // ----- dev実行時の mixin refmap remap 設定 -----
+    // 本体MOD「The four primitives and Weapons」の build.gradle と同じ設定。
+    // CurseMaven / TheIllusiveC4 maven の jar の refmap は SRG 名で書かれて
+    // いるため、official mapping の dev 環境ではそのままだと mixin が
+    // ターゲットを見つけられず Curios / Farmer's Delight などがクラッシュする。
+    // mixin.env.remapRefMap=true で runtime に SRG→official 変換を行わせる。
+    def commonProps = [
+        'forge.logging.markers'         : 'REGISTRIES',
+        'forge.logging.console.level'   : 'debug',
+        'mixin.env.remapRefMap'         : 'true',
+        'mixin.env.refMapRemappingFile' : "${projectDir}/build/createSrgToMcp/output.srg".toString()
+    ]
+
     runs {
         client {
             workingDirectory project.file('run')
-            property 'forge.logging.markers',        'REGISTRIES'
-            property 'forge.logging.console.level',  'debug'
+            commonProps.each { k, v -> property k, v }
         }
         server {
             workingDirectory project.file('run')
-            property 'forge.logging.markers',        'REGISTRIES'
-            property 'forge.logging.console.level',  'debug'
+            commonProps.each { k, v -> property k, v }
         }
     }
 }
 
 repositories {
-    // 本体JARをlibsフォルダから参照する場合はこちら（デフォルト）
-    // flatDir { dirs 'libs' }
+    // libs/ をローカルMavenリポジトリとして扱う（fg.deobf 用）
+    //   ファイル配置: libs/local/<group>/<name>/<version>/<name>-<version>.jar
+    //   例: libs/local/the_four_primitives_and_weapons/1.20.1-test/the_four_primitives_and_weapons-1.20.1-test.jar
+    maven {
+        url = file('libs').toURI()
+        metadataSources { artifact() }
+    }
 
-    // CurseMaven — Farmer's Delight など CurseForge 公開 mod を参照する場合
-    maven { url 'https://www.cursemaven.com' }
+    // Curios — TheIllusiveC4 公式 Maven (本体MOD準拠)
+    maven { url 'https://maven.theillusivec4.top/' }
+
+    // GeckoLib — Cloudsmith Maven (本体MOD準拠)
+    maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
+
+    // JEI — Progwml6 Maven (本体MOD準拠)
+    maven {
+        name = 'Progwml6 maven'
+        url  = 'https://dvs1.progwml6.com/files/maven/'
+    }
+    // JEI fallback (本体MOD準拠)
+    maven {
+        name = 'ModMaven'
+        url  = 'https://modmaven.dev'
+    }
+
+    // CurseMaven — Farmer's Delight など、CurseForge 公開 mod を使う場合
+    maven {
+        url 'https://www.cursemaven.com'
+        content { includeGroup 'curse.maven' }
+    }
 }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${forge_version}"
 
     // =====================================================================
-    // 本体 (The four primitives and Weapons) への依存
-    //
-    // 方法A — ローカルJAR（推奨・手軽）
-    //   1. 本体を ./gradlew build でビルド
-    //   2. 生成されたJARを libs/ フォルダに置く
-    //   3. 下記コメントを解除する
+    // 本体 (The four primitives and Weapons)
+    //   implementation で宣言することで runClient/runServer のクラスパスに
+    //   含まれ、dev実行時に自動でロードされる。
     // =====================================================================
-    compileOnly fileTree(dir: 'libs', include: '*.jar')
-
-    // 方法B — CurseMaven（プロジェクトID: 本体のCurseForgeプロジェクトID）
-    // compileOnly fg.deobf('curse.maven:the-four-primitives-and-weapons-XXXXXXX:YYYYYY')
+    implementation fg.deobf("local:${maw_artifact}:${maw_version}")
 
     // =====================================================================
-    // Farmer's Delight — オプション依存（なくてもビルド可能）
-    //
-    // 下記のファイルIDは CurseForge の Farmer's Delight 1.20.1 最新版に合わせて
-    // https://www.curseforge.com/minecraft/mc-mods/farmers-delight/files
-    // から確認・更新してください。
+    // Curios — 本体MODの任意依存（mods.toml の modId: curios_api）
+    //   :api 分類子はコンパイル用、フル版を runtimeOnly で dev runtime に乗せる。
     // =====================================================================
-    // compileOnly fg.deobf('curse.maven:farmers-delight-398521:4588498')
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
+
+    // =====================================================================
+    // GeckoLib — 本体MODの任意依存（アニメーション）
+    //   コンパイル時もruntimeもロード（本体MODはこれを implementation 指定）
+    // =====================================================================
+    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-1.20.1:${geckolib_version}")
+
+    // =====================================================================
+    // JEI — 本体MODの任意依存（レシピUI）
+    //   API はコンパイル用、forge本体は runtimeOnly。
+    // =====================================================================
+    compileOnly fg.deobf("mezz.jei:jei-1.20.1-common-api:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-1.20.1-forge-api:${jei_version}")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.20.1-forge:${jei_version}")
+
+    // =====================================================================
+    // Farmer's Delight (オプション) — addon側で必要なら有効化
+    //   project id 398521。下行のコメントを外し、fileId を埋めると有効化。
+    //   CurseForge: https://www.curseforge.com/minecraft/mc-mods/farmers-delight/files
+    // =====================================================================
+    // runtimeOnly fg.deobf("curse.maven:farmers-delight-398521:8007609")
 }
 
 processResources {

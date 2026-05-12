@@ -19,14 +19,14 @@ src/main/java/mawaddon/
 
 src/main/resources/
 ├── META-INF/mods.toml                Mod定義・依存関係
-├── assets/maw_sample_addon/
+├── assets/minecraft_armor_weapon_sample/
 │   ├── lang/
 │   │   ├── ja_jp.json                日本語翻訳
 │   │   └── en_us.json                英語翻訳
 │   └── models/item/
 │       ├── sample_sword.json         サンプル剣モデル
 │       └── dagger.json               ダガーモデル
-└── data/maw_sample_addon/
+└── data/minecraft_armor_weapon_sample/
     ├── weapon_types/
     │   └── weapons.json              ★ 武器タイプ宣言（最重要）
     └── maw_saya/
@@ -35,52 +35,116 @@ src/main/resources/
 
 ## セットアップ手順
 
-### 1. 本体JARを用意する
+### 1. 本体MODのソースを配置
 
-```bash
-# 本体プロジェクトのルートで
-cd ../The-four-primitives-and-Weapons
-./gradlew build
+本体MOD「The four primitives and Weapons」のソースプロジェクトを次のパスに置く（addon の build.gradle がデフォルトで参照する場所）:
 
-# 生成されたJARをlibsフォルダにコピー
-cp build/libs/*.jar ../The-four-primitives-and-Weapons-addons-Sample/libs/
-```
+| OS | デフォルトパス |
+|---|---|
+| macOS / Linux / WSL | `~/The-four-primitives-and-Weapons` |
+| Windows | `%USERPROFILE%\The-four-primitives-and-Weapons` |
 
-### 2. build.gradle の依存を有効化
+別の場所に置きたい場合は、addon の [build.gradle](build.gradle) 内の `mawSourceProject` を編集するか、環境変数 `MAW_DIR` を設定するか、`gradle.properties` に `mawSourceProject=/path/...` を書く。
 
-`build.gradle` を開き、以下のコメントを解除:
+> 既に本体MOD jar を手で `libs/local/the_four_primitives_and_weapons/<version>/` に置いている場合はこの手順を飛ばしてもよい（自動取込は最新を見つけたら上書きする）。
 
-```groovy
-compileOnly fileTree(dir: 'libs', include: '*.jar')
-```
+### 2. Mod ID を自分のものに変える
 
-### 3. Mod IDを変更する
-
-`maw_sample_addon` を自分のMod IDに一括置換:
+`minecraft_armor_weapon_sample` / `mawaddon` を自分の Mod ID に一括置換:
 
 | ファイル | 変更箇所 |
 |---|---|
-| `MawSampleAddon.java` | `MODID` 定数 |
-| `META-INF/mods.toml` | `modId=` の値 |
-| `build.gradle` | `archivesBaseName`、runsブロック |
+| [MawSampleAddon.java](src/main/java/mawaddon/MawSampleAddon.java) | `MODID` 定数 |
+| [META-INF/mods.toml](src/main/resources/META-INF/mods.toml) | `modId=` の値 |
+| [build.gradle](build.gradle) | `group`, `archivesBaseName` |
 | `SampleEventHandler.java` | `@Mod.EventBusSubscriber(modid=...)` |
-| `assets/` フォルダ名 | `maw_sample_addon` → 新しいID |
-| `lang/*.json` のキー | `maw_sample_addon` の部分 |
+| `assets/minecraft_armor_weapon_sample/` フォルダ名 | 新しい ID に |
+| `data/minecraft_armor_weapon_sample/` フォルダ名 | 新しい ID に |
+| `lang/*.json` のキー | `minecraft_armor_weapon_sample` の部分 |
 
-### 4. ビルド
+### 3. ビルド + 実行
+
+下記の「ビルド & 実行」を参照。
+
+---
+
+## ビルド & 実行
+
+### スクリプト1発で実行（推奨）
+
+用途別に2種類のスクリプトを同梱しています。
+
+| やりたいこと | macOS / Linux / WSL | Windows |
+|---|---|---|
+| 本体MODを最新からビルドして addon を起動 | `./run_client.sh` | `run_client.bat` |
+| 本体MODは再ビルドせず addon を起動 (高速) | `./run_quick.sh` | `run_quick.bat` |
+
+- [run_client.sh](run_client.sh) / [run_client.bat](run_client.bat) は内部で:
+  1. 本体MOD (`$MAW_DIR`) の `./gradlew build` を実行
+  2. addon の `./gradlew runClient` を実行（addon の build.gradle が config phase で本体MOD の最新jarを `libs/local/` に自動コピー）
+- [run_quick.sh](run_quick.sh) / [run_quick.bat](run_quick.bat) は `./gradlew runClient` を呼ぶだけ。本体MOD のソースに触らないので速い。
+
+> 本体MOD のソース位置がデフォルトと違うとき:
+> - bash: `MAW_DIR=/path/to/main-mod ./run_client.sh`
+> - cmd: `set MAW_DIR=C:\path\to\main-mod` してから `run_client.bat`
+
+**オフラインビルド** — `--offline` (短縮 `-o`) を渡すと依存解決をスキップしてキャッシュのみで実行:
 
 ```bash
-./gradlew build
+./run_client.sh --offline
+./run_quick.sh -o
+```
+```cmd
+run_client.bat --offline
+run_quick.bat -o
 ```
 
-`build/libs/` にJARが生成されます。
+初回はオンラインで `./gradlew build` / `runClient` を一度通してキャッシュを作っておく必要があります（[BUILD_COMMANDS.md §5.4](BUILD_COMMANDS.md) 参照）。
 
-### スクリプトで実行
+### 自動取込の仕組み
+
+addon の [build.gradle](build.gradle) は configuration phase で次を行います:
+
+1. `${MAW_DIR}/build/libs/` を探す（デフォルトはホーム直下）
+2. そこに `-sources` / `-dev` / `-javadoc` を含まない最新の jar があり、かつ addon 側の jar より新しければ、`libs/local/the_four_primitives_and_weapons/<version>/the_four_primitives_and_weapons-<version>.jar` にコピー（デフォルト version は `1.20.1-test`）
+3. 本体MOD のソースが無い場合は静かにスキップ（既に libs/local/ にある jar をそのまま使う）
+
+つまり「本体MOD を `./gradlew build` した直後に addon の runClient/build を叩けば、勝手に新しい jar が取り込まれる」状態です。
+
+### 直接 gradle を叩く場合
+
+| 目的 | macOS / Linux / WSL | Windows |
+|---|---|---|
+| addon の jar をビルド | `./gradlew build` | `gradlew.bat build` |
+| addon クライアント起動 | `./gradlew runClient` | `gradlew.bat runClient` |
+| addon サーバー起動 | `./gradlew runServer` | `gradlew.bat runServer` |
+| クリーンビルド | `./gradlew clean build` | `gradlew.bat clean build` |
+| データ生成 | `./gradlew runData` | `gradlew.bat runData` |
+
+成果物は [build/libs/](build/libs/) に出ます。詳しいオプションは [BUILD_COMMANDS.md](BUILD_COMMANDS.md) 参照。
+
+### 前提MODについて
+
+addon の build.gradle は次の前提MOD を Maven / CurseMaven から自動取得します（本体MOD と同じバージョン）:
+
+| MOD | バージョン | Maven |
+|---|---|---|
+| Curios | `5.10.0+1.20.1` | TheIllusiveC4 Maven |
+| GeckoLib | `4.7.3` | Cloudsmith Maven |
+| JEI | `15.20.0.129` | Progwml6 Maven (+ ModMaven fallback) |
+
+CurseForge fileId で取得したい場合は [build.gradle](build.gradle) 内の `geckolib_file_id` / `farmers_delight_file_id` を埋める（任意）。
+
+### オフラインモード
+
+ForgeGradle は初回はオンラインで Minecraft メタファイルを取得しますが、以降はオフラインで作業できます:
 
 ```bash
-bash build.sh          # 通常ビルド
-bash run_client.sh     # テストプレイ（Minecraft クライアント起動）
+./gradlew build --offline
+./gradlew runClient --offline
 ```
+
+詳しくは [BUILD_COMMANDS.md](BUILD_COMMANDS.md) 参照。
 
 ---
 
@@ -212,7 +276,7 @@ assets/your_mod/models/custom/saya/sword/saya_xxx.json     # バニラ剣の鞘
 - FDのナイフで動物を倒すと、本体の難易度に応じてボーナスドロップ（革・羽）が発生
 - `FarmersDelightCompat.isFDLoaded()` でFDの有無を確認できます
 
-FDのナイフは `data/maw_sample_addon/weapon_types/weapons.json` で `dagger` タイプに登録済みです。
+FDのナイフは [data/minecraft_armor_weapon_sample/weapon_types/weapons.json](src/main/resources/data/minecraft_armor_weapon_sample/weapon_types/weapons.json) で `dagger` タイプに登録済みです。
 
 ---
 
