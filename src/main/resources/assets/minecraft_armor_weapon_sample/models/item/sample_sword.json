@@ -1,6 +1,0 @@
-{
-  "parent": "item/handheld",
-  "textures": {
-    "layer0": "minecraft_armor_weapon_sample:item/sample_sword"
-  }
-}

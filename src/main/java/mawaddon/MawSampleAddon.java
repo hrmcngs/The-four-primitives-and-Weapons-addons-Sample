@@ -19,7 +19,7 @@ import org.apache.logging.log4j.Logger;
 @Mod(MawSampleAddon.MODID)
 public class MawSampleAddon {
 
-    public static final String MODID = "minecraft_armor_weapon_sample";
+    public static final String MODID = "the_four_primitives_and_weapons_addons_sample";
     public static final Logger LOGGER = LogManager.getLogger(MawSampleAddon.class);
 
     public MawSampleAddon() {

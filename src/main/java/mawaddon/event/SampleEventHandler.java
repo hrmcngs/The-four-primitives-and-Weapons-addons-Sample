@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.Mod;
  * Forgeのイベントシステムを使ってカスタム処理を追加するサンプルです。
  *
  * @Mod.EventBusSubscriber の MODID は自分のMOD IDに変更してください。
- * 本体 (minecraft_armor_weapon) のクラスを import して参照することもできます。
+ * 本体 (the_four_primitives_and_weapons) のクラスを import して参照することもできます。
  */
 @Mod.EventBusSubscriber(modid = MawSampleAddon.MODID)
 public class SampleEventHandler {

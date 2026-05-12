@@ -23,7 +23,7 @@
     "    assets/<your_ns>/models/custom/saya/sword/saya_xxx.json",
     "",
     "【このファイルの例】",
-    "  minecraft_armor_weapon_sample:sample_sword を 'sword'サヤ・model_data=1 (鉄剣の鞘) に登録 →",
+    "  the_four_primitives_and_weapons_addons_sample:sample_sword を 'sword'サヤ・model_data=1 (鉄剣の鞘) に登録 →",
     "  鉄剣と同じ見た目で納刀できるようになる。"
   ],
 
@@ -34,6 +34,6 @@
   },
 
   "sword": {
-    "minecraft_armor_weapon_sample:sample_sword": 1
+    "the_four_primitives_and_weapons_addons_sample:sample_sword": 1
   }
 }

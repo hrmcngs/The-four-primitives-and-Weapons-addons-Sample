@@ -19,14 +19,14 @@ src/main/java/mawaddon/
 
 src/main/resources/
 ├── META-INF/mods.toml                Mod定義・依存関係
-├── assets/minecraft_armor_weapon_sample/
+├── assets/the_four_primitives_and_weapons_addons_sample/
 │   ├── lang/
 │   │   ├── ja_jp.json                日本語翻訳
 │   │   └── en_us.json                英語翻訳
 │   └── models/item/
 │       ├── sample_sword.json         サンプル剣モデル
 │       └── dagger.json               ダガーモデル
-└── data/minecraft_armor_weapon_sample/
+└── data/the_four_primitives_and_weapons_addons_sample/
     ├── weapon_types/
     │   └── weapons.json              ★ 武器タイプ宣言（最重要）
     └── maw_saya/
@@ -50,7 +50,7 @@ src/main/resources/
 
 ### 2. Mod ID を自分のものに変える
 
-`minecraft_armor_weapon_sample` / `mawaddon` を自分の Mod ID に一括置換:
+`the_four_primitives_and_weapons_addons_sample` / `mawaddon` を自分の Mod ID に一括置換:
 
 | ファイル | 変更箇所 |
 |---|---|
@@ -58,9 +58,9 @@ src/main/resources/
 | [META-INF/mods.toml](src/main/resources/META-INF/mods.toml) | `modId=` の値 |
 | [build.gradle](build.gradle) | `group`, `archivesBaseName` |
 | `SampleEventHandler.java` | `@Mod.EventBusSubscriber(modid=...)` |
-| `assets/minecraft_armor_weapon_sample/` フォルダ名 | 新しい ID に |
-| `data/minecraft_armor_weapon_sample/` フォルダ名 | 新しい ID に |
-| `lang/*.json` のキー | `minecraft_armor_weapon_sample` の部分 |
+| `assets/the_four_primitives_and_weapons_addons_sample/` フォルダ名 | 新しい ID に |
+| `data/the_four_primitives_and_weapons_addons_sample/` フォルダ名 | 新しい ID に |
+| `lang/*.json` のキー | `the_four_primitives_and_weapons_addons_sample` の部分 |
 
 ### 3. ビルド + 実行
 
@@ -276,7 +276,7 @@ assets/your_mod/models/custom/saya/sword/saya_xxx.json     # バニラ剣の鞘
 - FDのナイフで動物を倒すと、本体の難易度に応じてボーナスドロップ（革・羽）が発生
 - `FarmersDelightCompat.isFDLoaded()` でFDの有無を確認できます
 
-FDのナイフは [data/minecraft_armor_weapon_sample/weapon_types/weapons.json](src/main/resources/data/minecraft_armor_weapon_sample/weapon_types/weapons.json) で `dagger` タイプに登録済みです。
+FDのナイフは [data/the_four_primitives_and_weapons_addons_sample/weapon_types/weapons.json](src/main/resources/data/the_four_primitives_and_weapons_addons_sample/weapon_types/weapons.json) で `dagger` タイプに登録済みです。
 
 ---
 
@@ -286,15 +286,15 @@ FDのナイフは [data/minecraft_armor_weapon_sample/weapon_types/weapons.json]
 
 ```java
 // 本体のアイテムを参照
-import minecraftarmorweapon.init.MinecraftArmorWeaponModItems;
-ItemStack katana = MinecraftArmorWeaponModItems.IRON_KATANA.get().getDefaultInstance();
+import the_four_primitives_and_weapons.init.TheFourPrimitivesAndWeaponsModItems;
+ItemStack katana = TheFourPrimitivesAndWeaponsModItems.IRON_KATANA.get().getDefaultInstance();
 
 // カスタム難易度を参照
-import minecraftarmorweapon.command.CustomDifficultyCommand;
+import the_four_primitives_and_weapons.command.CustomDifficultyCommand;
 int aiLevel = CustomDifficultyCommand.getCurrentDifficulty().getAiLevel();
 
 // Mob特性を参照
-import minecraftarmorweapon.trait.MobTrait;
+import the_four_primitives_and_weapons.trait.MobTrait;
 MobTrait trait = MobTrait.rollTrait(random.nextFloat(), aiLevel);
 ```
 

@@ -92,12 +92,12 @@ public class FarmersDelightCompat {
         try {
             // リフレクションや直接参照で MAW のクラスを呼ぶ
             // MAW が compileOnly で参照可能な場合はそのまま import して呼ぶ:
-            //   return minecraftarmorweapon.command.CustomDifficultyCommand
+            //   return the_four_primitives_and_weapons.command.CustomDifficultyCommand
             //              .getCurrentDifficulty().getAiLevel();
             //
             // MAW が compileOnly でない場合はリフレクションを使う:
             Class<?> cmdClass = Class.forName(
-                "minecraftarmorweapon.command.CustomDifficultyCommand");
+                "the_four_primitives_and_weapons.command.CustomDifficultyCommand");
             Object difficulty = cmdClass.getMethod("getCurrentDifficulty").invoke(null);
             return (int) difficulty.getClass().getMethod("getAiLevel").invoke(difficulty);
         } catch (Exception e) {

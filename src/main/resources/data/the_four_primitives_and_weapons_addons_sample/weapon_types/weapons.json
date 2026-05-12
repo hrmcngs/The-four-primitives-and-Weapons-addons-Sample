@@ -5,7 +5,7 @@
     "先頭が _ のファイルは無視されます。",
     "",
     "【このファイルの役割】",
-    "  1. minecraft_armor_weapon_sample:dagger を既存の 'dagger' タイプに追加",
+    "  1. the_four_primitives_and_weapons_addons_sample:dagger を既存の 'dagger' タイプに追加",
     "  2. Farmer's Delight のナイフ5種を 'dagger' タイプに追加",
     "     (FD が導入されていない場合、該当アイテムが存在しないだけで問題なし)",
     "",
@@ -20,7 +20,7 @@
     "dagger": {
       "display_name": "短剣",
       "items": [
-        "minecraft_armor_weapon_sample:dagger",
+        "the_four_primitives_and_weapons_addons_sample:dagger",
 
         "farmersdelight:flint_knife",
         "farmersdelight:iron_knife",
