@@ -1,0 +1,22 @@
+{
+  "_comment": [
+    "★ ファイル名先頭の _ を外して使ってください (_ で始まると無視されます)。",
+    "",
+    "刀(katana)用の独自鞘モデル。BlockBench などで作った3Dモデルを",
+    "ここ (assets/<modid>/models/custom/saya/katana/) に置き、",
+    "下の textures パスを自分のテクスチャに書き換える。",
+    "",
+    "このモデルを使うには:",
+    "  1. assets/the_four_primitives_and_weapons/models/item/saya.json を",
+    "     addon 側でオーバーライドして、新しい custom_model_data",
+    "     (空いてる番号、例 100+) を追加する。",
+    "  2. その number を maw_saya/saya.jsonc の \"katana\" に登録する。",
+    "",
+    "別案: 既存スロット (1=鉄, 2=金, ...) を流用すれば、addon 側で",
+    "オーバーライドせずに本体のモデルをそのまま使える。"
+  ],
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "the_four_primitives_and_weapons_addons_sample:item/saya/my_katana_saya"
+  }
+}

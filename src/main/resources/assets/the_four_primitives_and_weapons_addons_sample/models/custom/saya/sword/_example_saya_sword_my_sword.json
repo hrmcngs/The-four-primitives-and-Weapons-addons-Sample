@@ -1,0 +1,18 @@
+{
+  "_comment": [
+    "★ ファイル名先頭の _ を外して使ってください。",
+    "",
+    "バニラ剣ベース(sword)の独自鞘モデル。",
+    "命名規則: saya_sword_<weapon>.json (本体MODに合わせる)。",
+    "",
+    "使う流れ:",
+    "  1. このモデル + テクスチャを用意",
+    "  2. sword_saya.json を addon 側でオーバーライドして",
+    "     新しい custom_model_data を追加",
+    "  3. maw_saya/saya.jsonc の \"sword\" にその number を登録"
+  ],
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "the_four_primitives_and_weapons_addons_sample:item/saya/my_sword_saya"
+  }
+}

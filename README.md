@@ -148,6 +148,124 @@ ForgeGradle は初回はオンラインで Minecraft メタファイルを取得
 
 ---
 
+## アドオン作成ガイド（はじめての人向け）
+
+The four primitives and Weapons は **データ駆動** で設計されており、武器の追加・スキル割当て・納刀対応のほとんどが Java を書かずに JSON だけで完結します。Java は「特殊な攻撃挙動を持たせる」「Mob とのインタラクションを追加する」など独自ロジックが必要な時だけ書きます。
+
+### 0. テンプレート起動チェック
+
+このプロジェクトを `git clone` して `./run_client.sh` (Windows なら `run_client.bat`) が通る状態なのを確認してから着手するのが楽です。
+
+### 1. 自分のアドオン用に Mod ID を変える
+
+このサンプルは `the_four_primitives_and_weapons_addons_sample` という Mod ID で動いてます。一括置換でリブランディング:
+
+| 変更対象 | 値の例 |
+|---|---|
+| [src/main/java/mawaddon/MawSampleAddon.java](src/main/java/mawaddon/MawSampleAddon.java) の `MODID` 定数 | `"my_addon"` |
+| [META-INF/mods.toml](src/main/resources/META-INF/mods.toml) の `modId` と `[[dependencies.<modid>]]` の `<modid>` 部分 | `"my_addon"` |
+| `assets/the_four_primitives_and_weapons_addons_sample/` フォルダ名 | `assets/my_addon/` |
+| `data/the_four_primitives_and_weapons_addons_sample/` フォルダ名 | `data/my_addon/` |
+| `lang/ja_jp.json` `lang/en_us.json` のキーの `the_four_primitives_and_weapons_addons_sample` 部分 | `my_addon` |
+| [build.gradle](build.gradle) の `group` と `archivesBaseName` | お好み |
+
+正規表現一括置換できる IDE なら一発。
+
+### 2. 新しい武器アイテムを追加する
+
+3 ステップ:
+
+**(a) Java クラスを書く** — [SampleSwordItem.java](src/main/java/mawaddon/item/SampleSwordItem.java) や [DaggerItem.java](src/main/java/mawaddon/item/DaggerItem.java) を真似する。`SwordItem` を継承し、Tier と攻撃力・速度を設定。特殊挙動を入れたければ `hurtEnemy` などをオーバーライド。
+
+**(b) [AddonItems.java](src/main/java/mawaddon/init/AddonItems.java) に登録**
+
+```java
+public static final RegistryObject<Item> MY_SWORD =
+    REGISTRY.register("my_sword", MySwordItem::new);
+```
+
+**(c) リソース3つ** を addon の assets/ に置く:
+
+| ファイル | 内容 |
+|---|---|
+| `assets/<modid>/models/item/my_sword.json` | `parent: item/handheld` のシンプルなアイテムモデル |
+| `assets/<modid>/textures/item/my_sword.png` | 16×16 (またはお好み) アイテムテクスチャ |
+| `assets/<modid>/lang/{ja_jp,en_us}.json` に `"item.<modid>.my_sword": "..."` | 表示名翻訳 |
+
+### 3. 武器を「武器タイプ」に登録する（スキル割当て）
+
+[data/&lt;modid&gt;/weapon_types/weapons.json](src/main/resources/data/the_four_primitives_and_weapons_addons_sample/weapon_types/weapons.json) に書くだけで、本体の `WeaponTypeRegistry` が起動時に拾います。既存タイプ (`katana` `sword` `dagger` `rapier` `tyokuto` `bow` `crossbow` `throwing` `trident` `greatsword` `shield`) に乗せれば、その武器タイプのスキル一覧が `K キー` のスキル選択画面に出ます。
+
+```json
+{
+  "types": {
+    "sword": {
+      "items": [ "my_addon:my_sword" ]
+    }
+  }
+}
+```
+
+`items` だけ書けば motions は本体定義を継承。新規タイプを作る場合は `motions` セクションも書く（詳細は下の [武器タイプ登録](#武器タイプ登録weapon_types-json) セクション）。
+
+### 4. 武器に納刀（鞘）対応をつける
+
+[data/&lt;modid&gt;/maw_saya/saya.jsonc](src/main/resources/data/the_four_primitives_and_weapons_addons_sample/maw_saya/saya.jsonc) に書きます。2通り選べる:
+
+**(A) 本体内蔵の鞘モデルを流用 (簡単)**
+
+```jsonc
+"sword": {
+  "my_addon:my_sword": 1   // 1 = 鉄剣の鞘
+}
+```
+
+数字は本体の `sword_saya.json` 等の `custom_model_data` スロット。番号一覧は saya.jsonc のコメント参照。
+
+**(B) 独自の鞘モデルを作って差し替え (推奨)**
+
+```jsonc
+"sword": {
+  "my_addon:my_sword": "my_addon:custom/saya/sword/saya_my_sword"
+}
+```
+
+モデルファイル `assets/my_addon/models/custom/saya/sword/saya_my_sword.json` を置けば、本体MOD の `SayaModelWrapper` が起動時に自動スキャン・ベイクして納刀表示時に差し替えてくれます。 **`custom_model_data` 番号を使わないので無制限に追加できて他アドオンと衝突しません。** 詳細は [鞘(saya) への納刀登録](#鞘saya-への納刀登録maw_saya-jsonc) セクション。
+
+### 5. 動作確認
+
+```bash
+./run_client.sh           # 本体MODをビルド + addon dev 起動
+```
+
+ゲーム内で:
+- クリエイティブ検索やコマンド `/give @p my_addon:my_sword` で武器を取得
+- `K キー` でスキル選択画面を開いて武器スロットに入れる → そのタイプのスキルが選べる
+- `R キー` で鞘 (`/give @p the_four_primitives_and_weapons:sword_saya`) との納刀を試す → 設定した saya モデルが反映
+
+ソースを編集したら `/reload` (データ JSON 変更) または F3+T (モデル変更) で大体ホットリロードできます。
+
+### 6. オプション機能の連携
+
+各前提MODは addon の build.gradle が自動取得しますが、addon コード上での参照は任意です。連携を入れる時は `mods.toml` の依存に `mandatory=true` を立てるか、本体MODと同じく `mandatory=false` + コード側で導入チェック (例: [FarmersDelightCompat.java](src/main/java/mawaddon/compat/FarmersDelightCompat.java)) を使う。
+
+| 連携 | やれる事 |
+|---|---|
+| Curios | アクセサリスロット (ベルト/背中) への装着・刀掛け対応 |
+| GeckoLib | 武器の独自アニメーション (3D handheld など) |
+| JEI | レシピをUIに表示 |
+| Farmer's Delight | ナイフ系を `dagger` タイプに登録 (既にサンプル済み) |
+
+### 7. リリース用 jar をビルド
+
+```bash
+./gradlew build
+```
+
+→ `build/libs/<your_addon>-<version>.jar` ができる。これを本体MOD + 前提MODが入った Forge クライアントの `mods/` に入れるだけで動く。
+
+---
+
 ## 武器タイプ登録（weapon_types JSON）
 
 本体の `WeaponTypeRegistry` はサーバー起動時に **全MODの** `data/*/weapon_types/*.json` を自動収集します。
@@ -209,21 +327,9 @@ ForgeGradle は初回はオンラインで Minecraft メタファイルを取得
 
 ---
 
-## 鞘(saya) への納刀登録（maw_saya JSON）
+## 鞘(saya) への納刀登録（maw_saya jsonc）
 
-本体の `SayaRegistry` はサーバー起動時に **全MODの** `data/*/maw_saya/*.json` を自動収集します。
-アドオンはJavaコードなしに、JSONを置くだけで自分のアイテムを納刀対象にできます。
-
-### フォーマット
-
-```json
-// data/your_mod/maw_saya/saya.json
-{
-  "katana":  { "your_mod:custom_katana": 1 },
-  "tyokuto": { "your_mod:custom_tyokuto": 4 },
-  "sword":   { "your_mod:custom_sword": 1 }
-}
-```
+本体の `SayaRegistry` はサーバー起動時に **全MODの** `data/*/maw_saya/*.jsonc` (および `.json`) を自動収集します。`//` `/* */` コメントOK、`_` 始まりのファイルは無視。
 
 | キー | 対象サヤ | 説明 |
 |---|---|---|
@@ -231,41 +337,67 @@ ForgeGradle は初回はオンラインで Minecraft メタファイルを取得
 | `tyokuto` | 本体の `tyokuto_saya` | 直刀の鞘 |
 | `sword` | 本体の `sword_saya` | バニラ剣ベースの鞘 |
 
-値は本体 `assets/.../models/item/saya.json` (および tyokuto_saya / sword_saya) の
-`overrides` で定義された `custom_model_data` です。
-**既存のスロット番号を流用すれば本体に同梱されている鞘モデルをそのまま使えます**。
+### 書き方は2通り
 
-| サヤ | 既存スロット例 |
-|---|---|
-| katana | 1=iron, 2=gold, 3=stone, 4=netherite, 16=diamond, ... |
-| tyokuto | 4=iron, 5=gold, 6=stone, 7=diamond, 8=netherite |
-| sword | 1=iron, 2=gold, 3=stone, 4=diamond, 5=netherite |
+**(A) 整数** — 本体に内蔵されている鞘モデルの `custom_model_data` スロット番号を流用。
 
-### 独自の鞘モデルを出したい場合
-
-本体の `saya.json` を上書きするリソースパック差分を自分のMODに含めて、
-新しい `custom_model_data` 番号のエントリと対応モデルを追加してください。
-同じ番号を別MODが先に登録していると衝突する点に注意。
-
-**モデルファイルの配置先 (規約)** — 本体MODと同じ階層構造を踏襲してください:
-
-```
-assets/your_mod/models/custom/saya/katana/saya_xxx.json    # 通常の刀の鞘
-assets/your_mod/models/custom/saya/tyokuto/saya_xxx.json   # 直刀の鞘
-assets/your_mod/models/custom/saya/sword/saya_xxx.json     # バニラ剣の鞘
-```
-
-本体の `saya.json` overrides を上書きする際の `model` 値の例:
-
-```json
+```jsonc
 {
-  "predicate": { "custom_model_data": 20 },
-  "model": "your_mod:custom/saya/katana/saya_your_katana"
+  "katana":  { "your_mod:custom_katana": 1 },     // 1 = 鉄刀の鞘
+  "tyokuto": { "your_mod:custom_tyokuto": 4 },    // 4 = 鉄直刀の鞘
+  "sword":   { "your_mod:custom_sword":   1 }     // 1 = 鉄剣の鞘
 }
 ```
 
-> **ファイル名・パス規約** — 本体MODの命名: `saya_<weapon_name>.json` (通常刀), `saya_<weapon_name>_tyokuto.json` (直刀), `saya_sword_<weapon_name>.json` (バニラ剣ベース)。
-> アドオン側も同じ命名にしておくと、本体・他アドオンと衝突しにくく分かりやすいです。
+スロット番号の対応:
+
+| サヤ | 既存スロット |
+|---|---|
+| katana | 1=iron, 2=gold, 3=stone, 4=netherite, 5=wither, 7=darkness, 8=magical, 9-15=他, 16=diamond, 19=replica |
+| tyokuto | 1=luna, 4=iron, 5=gold, 6=stone, 7=diamond, 8=netherite |
+| sword | 1=iron, 2=gold, 3=stone, 4=diamond, 5=netherite |
+
+**(B) 文字列 (ResourceLocation)** — アドオン独自の鞘モデルを動的に差し替え。★推奨★
+
+```jsonc
+{
+  "sword": {
+    "your_mod:custom_sword": "your_mod:custom/saya/sword/saya_my_sword"
+  }
+}
+```
+
+値で指定したパスのモデル JSON を本体MOD の `SayaModelWrapper` (BakedModel) が起動時に自動ベイク・キャッシュし、納刀表示時に動的差し替えします。**`custom_model_data` 番号を一切経由しない**ので、いくらでも追加できて他アドオンと衝突しません。
+
+> 仕組み: `ModelEvent.RegisterAdditional` で `assets/<*>/models/custom/saya/{katana,sword,tyokuto}/*.json` を全mod横断で再帰スキャン → 自動ベイク登録 → `ModelEvent.ModifyBakingResult` で本体の3つの saya モデルを SayaModelWrapper に差し替え → 描画時に NBT `StoredSword` → SayaRegistry → カスタムモデル解決。
+
+### 独自モデルの配置先（規約）
+
+```
+assets/<your_mod>/models/custom/saya/katana/saya_xxx.json    # 通常の刀の鞘
+assets/<your_mod>/models/custom/saya/tyokuto/saya_xxx.json   # 直刀の鞘
+assets/<your_mod>/models/custom/saya/sword/saya_xxx.json     # バニラ剣の鞘
+```
+
+> **ファイル名規約** — 本体MODの命名に揃えると分かりやすい:
+> - 通常刀: `saya_<weapon_name>.json`
+> - 直刀: `saya_<weapon_name>_tyokuto.json`
+> - バニラ剣ベース: `saya_sword_<weapon_name>.json`
+> - `_` で始まるファイル名はスキャンから除外（テンプレ用）
+
+### モデルの中身
+
+シンプルに本体MOD の既存モデルを `parent` 継承する形が一番楽:
+
+```json
+{
+  "parent": "the_four_primitives_and_weapons:custom/saya/sword/saya_sword_iron_sword"
+}
+```
+
+これだけで本体MOD の鉄剣鞘テクスチャをそのまま借りられます。BlockBench で独自 3D モデルを作って `elements` を書く場合は、本体MOD の同種モデルを参考にしてください。
+
+サンプル: [saya_sample_sword.json](src/main/resources/assets/the_four_primitives_and_weapons_addons_sample/models/custom/saya/sword/saya_sample_sword.json) が実装デモとして同梱されています。
 
 ---
 

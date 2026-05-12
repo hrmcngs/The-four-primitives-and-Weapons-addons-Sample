@@ -6,7 +6,8 @@
     "",
     "【このファイルの役割】",
     "  1. the_four_primitives_and_weapons_addons_sample:dagger を既存の 'dagger' タイプに追加",
-    "  2. Farmer's Delight のナイフ5種を 'dagger' タイプに追加",
+    "  2. the_four_primitives_and_weapons_addons_sample:sample_sword を既存の 'sword' タイプに追加",
+    "  3. Farmer's Delight のナイフ5種を 'dagger' タイプに追加",
     "     (FD が導入されていない場合、該当アイテムが存在しないだけで問題なし)",
     "",
     "【ポイント】",
@@ -27,6 +28,13 @@
         "farmersdelight:golden_knife",
         "farmersdelight:diamond_knife",
         "farmersdelight:netherite_knife"
+      ]
+    },
+
+    "sword": {
+      "display_name": "剣",
+      "items": [
+        "the_four_primitives_and_weapons_addons_sample:sample_sword"
       ]
     }
 

@@ -1,0 +1,18 @@
+{
+  "_comment": [
+    "★ ファイル名先頭の _ を外して使ってください。",
+    "",
+    "直刀(tyokuto)用の独自鞘モデル。",
+    "命名規則: saya_<weapon>_tyokuto.json (本体MODに合わせる)。",
+    "",
+    "使う流れ:",
+    "  1. このモデル + テクスチャを用意",
+    "  2. tyokuto_saya.json を addon 側でオーバーライドして",
+    "     新しい custom_model_data を追加",
+    "  3. maw_saya/saya.jsonc の \"tyokuto\" にその number を登録"
+  ],
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "the_four_primitives_and_weapons_addons_sample:item/saya/my_tyokuto_saya"
+  }
+}
