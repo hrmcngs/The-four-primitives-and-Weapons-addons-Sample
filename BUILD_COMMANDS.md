@@ -94,16 +94,32 @@ org.gradle.offline=true
 
 > 元に戻すときはこの行を削除します。
 
-### 5.4 オフライン作業前のキャッシュ準備（推奨）
+### 5.4 オフライン作業前のキャッシュ準備（重要）
 
-オンライン環境で先に依存をすべてダウンロードしておくと、後でオフラインでも動きます:
+ForgeGradle 6 はビルド時に Minecraft メタファイル（`downloadMCMeta`）や
+アセットを Mojang から取得します。これらのタスクは `--offline` を渡しても
+キャッシュが無いと失敗するため、**最初に一度だけオンラインで実行**して
+キャッシュを作っておく必要があります。
 
 ```bash
+# 1) オンライン環境で1回だけ実行（依存とMCメタを全部取得）
 ./gradlew build --refresh-dependencies
-./gradlew runClient   # 1回だけ起動して MC アセットも取得
+./gradlew runClient   # ゲーム画面が出るところまで起動して終了
+
+# 2) 以降はオフラインでもOK
+./gradlew runClient --offline
+./gradlew build --offline
 ```
 
-その後、オフライン環境では `--offline` を付けて実行します。
+### 5.5 証明書チェックの無効化（このプロジェクトでは設定済み）
+
+ForgeGradle 6 は起動時に `maven.minecraftforge.net` の証明書検証を行い、
+オフラインだとここで失敗します。`gradle.properties` に以下を入れてあるので
+通常は意識不要です:
+
+```properties
+systemProp.net.minecraftforge.gradle.check.certs=false
+```
 
 ---
 
