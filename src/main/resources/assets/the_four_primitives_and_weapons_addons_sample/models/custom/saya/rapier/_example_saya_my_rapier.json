@@ -1,0 +1,21 @@
+{
+  "_comment": [
+    "★ ファイル名先頭の _ を外して使ってください (_ で始まると無視されます)。",
+    "",
+    "レイピア (rapier) 用の独自鞘モデル — 動的モデル選択方式。",
+    "命名規則は本体MOD に合わせて saya_<weapon>_rapier.json が分かりやすい。",
+    "",
+    "【セットアップ手順】",
+    "  1. _ を外して saya_my_rapier.json などにリネーム。",
+    "  2. テクスチャを用意し、下の textures.layer0 を書き換える。",
+    "  3. data/<your_mod>/maw_saya/saya.jsonc の \"rapier\" セクションに登録:",
+    "       \"<your_mod>:my_rapier\":",
+    "         \"<your_mod>:custom/saya/rapier/saya_my_rapier\"",
+    "",
+    "custom_model_data は使わない。本体MOD の rapier_saya.json を上書きする必要もない。"
+  ],
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "the_four_primitives_and_weapons_addons_sample:item/saya/my_rapier_saya"
+  }
+}

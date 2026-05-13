@@ -7,6 +7,8 @@
 #   ./run_quick.sh -o               同上
 set -e
 
+COMMON_FLAGS="-Dnet.minecraftforge.gradle.check.certs=false"
+
 GRADLE_OPTS_EXTRA=""
 for arg in "$@"; do
     case "$arg" in
@@ -16,4 +18,4 @@ for arg in "$@"; do
 done
 
 echo "==> addon runClient (本体MODは再ビルドしない)  $GRADLE_OPTS_EXTRA"
-exec ./gradlew runClient $GRADLE_OPTS_EXTRA
+exec ./gradlew runClient $GRADLE_OPTS_EXTRA $COMMON_FLAGS

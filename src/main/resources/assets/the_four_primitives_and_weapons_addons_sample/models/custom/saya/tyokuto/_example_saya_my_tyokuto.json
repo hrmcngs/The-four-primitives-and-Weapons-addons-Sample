@@ -1,15 +1,18 @@
 {
   "_comment": [
-    "★ ファイル名先頭の _ を外して使ってください。",
+    "★ ファイル名先頭の _ を外して使ってください (_ で始まると無視されます)。",
     "",
-    "直刀(tyokuto)用の独自鞘モデル。",
-    "命名規則: saya_<weapon>_tyokuto.json (本体MODに合わせる)。",
+    "直刀 (tyokuto) 用の独自鞘モデル — 動的モデル選択方式。",
+    "命名規則は本体MOD に合わせて saya_<weapon>_tyokuto.json が分かりやすい。",
     "",
-    "使う流れ:",
-    "  1. このモデル + テクスチャを用意",
-    "  2. tyokuto_saya.json を addon 側でオーバーライドして",
-    "     新しい custom_model_data を追加",
-    "  3. maw_saya/saya.jsonc の \"tyokuto\" にその number を登録"
+    "【セットアップ手順】",
+    "  1. _ を外して saya_my_tyokuto.json などにリネーム。",
+    "  2. テクスチャを用意し、下の textures.layer0 を書き換える。",
+    "  3. data/<your_mod>/maw_saya/saya.jsonc の \"tyokuto\" セクションに登録:",
+    "       \"<your_mod>:my_tyokuto\":",
+    "         \"<your_mod>:custom/saya/tyokuto/saya_my_tyokuto\"",
+    "",
+    "custom_model_data は使わない。本体MOD の tyokuto_saya.json を上書きする必要もない。"
   ],
   "parent": "item/handheld",
   "textures": {

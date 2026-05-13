@@ -13,6 +13,10 @@ setlocal
 
 if "%MAW_DIR%"=="" set "MAW_DIR=%USERPROFILE%\The-four-primitives-and-Weapons"
 
+REM ForgeGradle 5.1 (本体MOD) は systemProp 経由で証明書チェック無効化が
+REM 効かないケースがあるので、コマンドラインから -D で確実に渡す。
+set "COMMON_FLAGS=-Dnet.minecraftforge.gradle.check.certs=false"
+
 set "GRADLE_OPTS_EXTRA="
 :ARG_LOOP
 if "%~1"=="" goto ARG_DONE
@@ -27,7 +31,7 @@ goto ARG_LOOP
 if exist "%MAW_DIR%\gradlew.bat" (
     echo ==^> 本体MODをビルド: %MAW_DIR% %GRADLE_OPTS_EXTRA%
     pushd "%MAW_DIR%"
-    call gradlew.bat build %GRADLE_OPTS_EXTRA%
+    call gradlew.bat build %GRADLE_OPTS_EXTRA% %COMMON_FLAGS%
     if errorlevel 1 (
         popd
         exit /b 1
@@ -39,4 +43,4 @@ if exist "%MAW_DIR%\gradlew.bat" (
 )
 
 echo ==^> addon runClient: %~dp0 %GRADLE_OPTS_EXTRA%
-call gradlew.bat runClient %GRADLE_OPTS_EXTRA%
+call gradlew.bat runClient %GRADLE_OPTS_EXTRA% %COMMON_FLAGS%

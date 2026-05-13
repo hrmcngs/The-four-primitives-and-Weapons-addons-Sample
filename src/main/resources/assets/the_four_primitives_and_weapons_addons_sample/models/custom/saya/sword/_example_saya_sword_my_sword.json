@@ -1,15 +1,19 @@
 {
   "_comment": [
-    "★ ファイル名先頭の _ を外して使ってください。",
+    "★ ファイル名先頭の _ を外して使ってください (_ で始まると無視されます)。",
     "",
-    "バニラ剣ベース(sword)の独自鞘モデル。",
-    "命名規則: saya_sword_<weapon>.json (本体MODに合わせる)。",
+    "バニラ剣ベース (sword) 用の独自鞘モデル — 動的モデル選択方式。",
+    "命名規則は本体MOD に合わせて saya_sword_<weapon>.json が分かりやすい。",
     "",
-    "使う流れ:",
-    "  1. このモデル + テクスチャを用意",
-    "  2. sword_saya.json を addon 側でオーバーライドして",
-    "     新しい custom_model_data を追加",
-    "  3. maw_saya/saya.jsonc の \"sword\" にその number を登録"
+    "【セットアップ手順】",
+    "  1. _ を外して saya_sword_my_sword.json などにリネーム。",
+    "  2. テクスチャを用意し、下の textures.layer0 を書き換える。",
+    "  3. data/<your_mod>/maw_saya/saya.jsonc の \"sword\" セクションに登録:",
+    "       \"<your_mod>:my_sword\":",
+    "         \"<your_mod>:custom/saya/sword/saya_sword_my_sword\"",
+    "",
+    "custom_model_data は使わない。本体MOD の sword_saya.json を上書きする",
+    "必要もない。同梱の saya_sample_sword.json が実動デモ。"
   ],
   "parent": "item/handheld",
   "textures": {

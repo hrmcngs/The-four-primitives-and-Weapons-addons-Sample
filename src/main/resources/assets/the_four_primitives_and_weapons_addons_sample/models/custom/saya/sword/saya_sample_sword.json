@@ -1,13 +1,19 @@
 {
   "_comment": [
     "sample_sword 用の独自鞘モデル (動的モデル選択のデモ)。",
-    "saya.jsonc で 'sample_sword: \"...:custom/saya/sword/saya_sample_sword\"' と",
-    "書くと本体MOD の SayaModelWrapper がこのファイルを読み込んで表示する。",
     "",
-    "テクスチャは本体MOD の鉄剣鞘テクスチャを流用 (parent 継承)。",
-    "自前テクスチャを使いたい場合は textures.layer0 を",
-    "'the_four_primitives_and_weapons_addons_sample:item/saya/sample_sword_saya' などに変更し、",
-    "対応する PNG を assets/.../textures/item/saya/ に置く。"
+    "data/<modid>/maw_saya/saya.jsonc に",
+    "  \"<modid>:sample_sword\": \"<modid>:custom/saya/sword/saya_sample_sword\"",
+    "と書くと、本体MOD の SayaModelWrapper が起動時にこのファイルを",
+    "自動ベイクして、納刀表示時に動的に差し替える。",
+    "custom_model_data は使わない (NBT の StoredSword から解決)。",
+    "",
+    "下の parent は本体MOD の鉄剣鞘モデルを継承しているので、",
+    "テクスチャを差し替えずにそのまま動く。",
+    "",
+    "独自テクスチャを使う場合は parent を消して BlockBench の出力を",
+    "そのまま貼り付けるか、または textures セクションで layer / slot を",
+    "上書きする (本体モデルの BlockBench JSON は textures.\"0\"/\"1\" を持つ)。"
   ],
   "parent": "the_four_primitives_and_weapons:custom/saya/sword/saya_sword_iron_sword"
 }

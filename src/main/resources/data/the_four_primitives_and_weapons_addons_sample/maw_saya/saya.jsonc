@@ -8,69 +8,58 @@
 //   katana  → 本体の saya.json         (通常の刀の鞘)
 //   tyokuto → 本体の tyokuto_saya.json (直刀の鞘)
 //   sword   → 本体の sword_saya.json   (バニラ剣の鞘)
+//   rapier  → 本体の rapier_saya.json  (レイピアの鞘) ← v2 で追加
 //
-// 【値の書き方】 — 2通り選べる
+// 【値の書き方】 — 文字列 (ResourceLocation) で書く ★標準★
 //
-//   (A) 整数 (slot番号) — 本体内蔵モデル流用
-//       "item_id": 1
-//       本体の <saya>.json overrides の対応 custom_model_data
-//       スロットの内蔵モデル (鉄剣鞘・金剣鞘…) がそのまま使われる。
-//       手軽だがスロット番号が決まっているので拡張性は低い。
-//
-//   (B) 文字列 (ResourceLocation) — アドオン独自モデル ★推奨★
-//       "item_id": "your_mod:custom/saya/sword/saya_foo"
+//       "item_id": "your_mod:custom/saya/<type>/saya_foo"
 //       指定されたモデルパスを本体MOD の SayaModelWrapper が動的に
 //       読み込んで saya アイテム表示時に差し替える。
-//       custom_model_data 番号を一切経由しないため、いくらでも追加
-//       できて他アドオンと衝突しない。
+//       custom_model_data は使わないので衝突の心配なし。
 //
 //       モデルファイルの配置先 (規約):
 //          assets/<your_ns>/models/custom/saya/katana/saya_xxx.json
 //          assets/<your_ns>/models/custom/saya/tyokuto/saya_xxx.json
 //          assets/<your_ns>/models/custom/saya/sword/saya_xxx.json
+//          assets/<your_ns>/models/custom/saya/rapier/saya_xxx.json
 //       SayaDynamicModelEvents が起動時にこのフォルダを再帰スキャン
 //       して全 .json を自動ベイク登録する (先頭が _ のファイルは無視)。
 //
-// 【(A) 既存スロット一覧】
-//   katana (assets/the_four_primitives_and_weapons/models/item/saya.json)
-//      1 = 鉄         9 = 魔狐
-//      2 = 金        10 = プロトタイプ
-//      3 = 石        11 = 旧
-//      4 = ネザライト 12 = テスト鉄
-//      5 = ウィザー   13 = リバーズ・オブ・ブラッド
-//      7 = ダークネス 14 = 鬼狗杖
-//      8 = マジカル   15 = ロキ
-//                    16 = ダイヤ
-//                    19 = レプリカ・オブ・ライト
-//   tyokuto (tyokuto_saya.json)
-//      1 = ルナ       6 = 石
-//      4 = 鉄         7 = ダイヤ
-//      5 = 金         8 = ネザライト
-//   sword (sword_saya.json)
-//      1 = 鉄         4 = ダイヤ
-//      2 = 金         5 = ネザライト
-//      3 = 石
+// 【値の書き方 (旧)】 — 整数 (slot番号)  ※互換のため受理されるが非推奨
+//
+//       "item_id": 1
+//       本体の <saya>.json overrides の対応 custom_model_data
+//       スロットの内蔵モデルが使われる。スロット番号が決まっているので
+//       拡張性が低く、本体側で slot を廃止する可能性もあるため新規アイテムでは
+//       使わないこと。
+//
+// 【旧整数スロット一覧 (本体側で削除済みのため非推奨)】
+//   katana 1=鉄 2=金 3=石 4=ネザライト 5=ウィザー 7=ダークネス 8=マジカル
+//          9=魔狐 10=プロトタイプ 11=旧 12=テスト鉄 13=リバーズ
+//          14=鬼狗杖 15=ロキ 16=ダイヤ 19=レプリカ
+//   tyokuto 1=ルナ 4=鉄 5=金 6=石 7=ダイヤ 8=ネザライト
+//   sword   1=鉄 2=金 3=石 4=ダイヤ 5=ネザライト
+//   rapier  1=木 2=石 3=鉄 4=金 5=ダイヤ 6=ネザライト
 // =====================================================================
 {
   "katana": {
-    // (A) 例: 自前の刀を本体の鉄刀鞘(=1) に納刀
-    // "the_four_primitives_and_weapons_addons_sample:my_katana": 1
-
-    // (B) 例: 自前の刀を独自モデルで納刀
+    // 例: 自前の刀を独自モデルで納刀
     // "the_four_primitives_and_weapons_addons_sample:my_katana": "the_four_primitives_and_weapons_addons_sample:custom/saya/katana/saya_my_katana"
   },
 
   "tyokuto": {
-    // (A) 例: 自前の直刀を本体の鉄直刀鞘(=4) に納刀
-    // "the_four_primitives_and_weapons_addons_sample:my_tyokuto": 4
+    // 例: 自前の直刀を独自モデルで納刀
+    // "the_four_primitives_and_weapons_addons_sample:my_tyokuto": "the_four_primitives_and_weapons_addons_sample:custom/saya/tyokuto/saya_my_tyokuto"
   },
 
   "sword": {
-    // (B) sample_sword を独自鞘モデル (saya_sample_sword.json) で納刀
+    // sample_sword を独自鞘モデル (saya_sample_sword.json) で納刀
     //     → 動的モデル選択のデモ。本体の sword_saya.json を一切いじらずに動く。
     "the_four_primitives_and_weapons_addons_sample:sample_sword": "the_four_primitives_and_weapons_addons_sample:custom/saya/sword/saya_sample_sword"
+  },
 
-    // (A) 同じことを整数スロット(=1, 鉄剣鞘) でやる場合の書き方:
-    // "the_four_primitives_and_weapons_addons_sample:sample_sword": 1
+  "rapier": {
+    // 例: 自前のレイピアを独自モデルで納刀
+    // "the_four_primitives_and_weapons_addons_sample:my_rapier": "the_four_primitives_and_weapons_addons_sample:custom/saya/rapier/saya_my_rapier"
   }
 }

@@ -14,6 +14,10 @@ set -e
 ADDON_DIR="$(cd "$(dirname "$0")" && pwd)"
 MAW_DIR="${MAW_DIR:-$HOME/The-four-primitives-and-Weapons}"
 
+# ForgeGradle 5.1 (本体MOD) は systemProp 経由で証明書チェック無効化が効かない
+# ケースがあるので、コマンドラインから -D で確実に渡す。
+COMMON_FLAGS="-Dnet.minecraftforge.gradle.check.certs=false"
+
 GRADLE_OPTS_EXTRA=""
 for arg in "$@"; do
     case "$arg" in
@@ -24,11 +28,11 @@ done
 
 if [ -d "$MAW_DIR" ]; then
     echo "==> 本体MODをビルド: $MAW_DIR  $GRADLE_OPTS_EXTRA"
-    (cd "$MAW_DIR" && ./gradlew build $GRADLE_OPTS_EXTRA)
+    (cd "$MAW_DIR" && ./gradlew build $GRADLE_OPTS_EXTRA $COMMON_FLAGS)
 else
     echo "[skip] 本体MOD ソースが見つかりません: $MAW_DIR"
     echo "       libs/local/ の既存jarで起動します。"
 fi
 
 echo "==> addon runClient: $ADDON_DIR  $GRADLE_OPTS_EXTRA"
-exec ./gradlew runClient $GRADLE_OPTS_EXTRA
+exec ./gradlew runClient $GRADLE_OPTS_EXTRA $COMMON_FLAGS

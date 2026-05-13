@@ -28,9 +28,16 @@ src/main/resources/
 │       └── dagger.json               ダガーモデル
 └── data/the_four_primitives_and_weapons_addons_sample/
     ├── weapon_types/
-    │   └── weapons.json              ★ 武器タイプ宣言（最重要）
+    │   └── weapons.json              ★ 武器タイプ宣言
     └── maw_saya/
-        └── saya.json                 ★ 鞘(納刀)対象アイテム宣言
+        └── saya.jsonc                ★ 鞘(納刀)対象アイテム宣言
+
+assets/the_four_primitives_and_weapons_addons_sample/models/custom/saya/
+├── katana/                            刀の鞘モデル置き場
+├── tyokuto/                           直刀の鞘モデル置き場
+├── sword/                             バニラ剣の鞘モデル置き場
+│   └── saya_sample_sword.json         ★ 実動デモ (sample_sword の独自鞘)
+└── rapier/                            レイピアの鞘モデル置き場
 ```
 
 ## セットアップ手順
@@ -210,19 +217,7 @@ public static final RegistryObject<Item> MY_SWORD =
 
 ### 4. 武器に納刀（鞘）対応をつける
 
-[data/&lt;modid&gt;/maw_saya/saya.jsonc](src/main/resources/data/the_four_primitives_and_weapons_addons_sample/maw_saya/saya.jsonc) に書きます。2通り選べる:
-
-**(A) 本体内蔵の鞘モデルを流用 (簡単)**
-
-```jsonc
-"sword": {
-  "my_addon:my_sword": 1   // 1 = 鉄剣の鞘
-}
-```
-
-数字は本体の `sword_saya.json` 等の `custom_model_data` スロット。番号一覧は saya.jsonc のコメント参照。
-
-**(B) 独自の鞘モデルを作って差し替え (推奨)**
+[data/&lt;modid&gt;/maw_saya/saya.jsonc](src/main/resources/data/the_four_primitives_and_weapons_addons_sample/maw_saya/saya.jsonc) に「アイテムID → 鞘モデルのパス」を書きます。
 
 ```jsonc
 "sword": {
@@ -230,7 +225,11 @@ public static final RegistryObject<Item> MY_SWORD =
 }
 ```
 
-モデルファイル `assets/my_addon/models/custom/saya/sword/saya_my_sword.json` を置けば、本体MOD の `SayaModelWrapper` が起動時に自動スキャン・ベイクして納刀表示時に差し替えてくれます。 **`custom_model_data` 番号を使わないので無制限に追加できて他アドオンと衝突しません。** 詳細は [鞘(saya) への納刀登録](#鞘saya-への納刀登録maw_saya-jsonc) セクション。
+モデルファイル `assets/my_addon/models/custom/saya/sword/saya_my_sword.json` を置けば、本体MOD の `SayaModelWrapper` が起動時に自動スキャン・ベイクして納刀表示時に差し替えてくれます。**`custom_model_data` は使わないので無制限に追加できて他アドオンと衝突しません。** 詳細は [鞘(saya) への納刀登録](#鞘saya-への納刀登録maw_saya-jsonc) セクション。
+
+`katana` `tyokuto` `sword` `rapier` の 4 種類の鞘に対応しています。各種類ごとに上の例と同じパターンで登録します。
+
+> 旧版では値に整数 (鉄=1, 金=2 など) を書いて本体内蔵モデルを流用する方式もありましたが、現在は **文字列パス方式に統一されています**。整数も互換のため受理されますが新規アイテムでは使わないでください。
 
 ### 5. 動作確認
 
@@ -336,40 +335,26 @@ public static final RegistryObject<Item> MY_SWORD =
 | `katana` | 本体の `saya` | 通常の刀の鞘 |
 | `tyokuto` | 本体の `tyokuto_saya` | 直刀の鞘 |
 | `sword` | 本体の `sword_saya` | バニラ剣ベースの鞘 |
+| `rapier` | 本体の `rapier_saya` | レイピアの鞘 |
 
-### 書き方は2通り
+### 書き方 — ResourceLocation 文字列で書く
 
-**(A) 整数** — 本体に内蔵されている鞘モデルの `custom_model_data` スロット番号を流用。
-
-```jsonc
-{
-  "katana":  { "your_mod:custom_katana": 1 },     // 1 = 鉄刀の鞘
-  "tyokuto": { "your_mod:custom_tyokuto": 4 },    // 4 = 鉄直刀の鞘
-  "sword":   { "your_mod:custom_sword":   1 }     // 1 = 鉄剣の鞘
-}
-```
-
-スロット番号の対応:
-
-| サヤ | 既存スロット |
-|---|---|
-| katana | 1=iron, 2=gold, 3=stone, 4=netherite, 5=wither, 7=darkness, 8=magical, 9-15=他, 16=diamond, 19=replica |
-| tyokuto | 1=luna, 4=iron, 5=gold, 6=stone, 7=diamond, 8=netherite |
-| sword | 1=iron, 2=gold, 3=stone, 4=diamond, 5=netherite |
-
-**(B) 文字列 (ResourceLocation)** — アドオン独自の鞘モデルを動的に差し替え。★推奨★
+値には **「鞘モデルの ResourceLocation 文字列」** を書きます:
 
 ```jsonc
 {
-  "sword": {
-    "your_mod:custom_sword": "your_mod:custom/saya/sword/saya_my_sword"
-  }
+  "katana":  { "your_mod:custom_katana":  "your_mod:custom/saya/katana/saya_custom_katana" },
+  "tyokuto": { "your_mod:custom_tyokuto": "your_mod:custom/saya/tyokuto/saya_custom_tyokuto" },
+  "sword":   { "your_mod:custom_sword":   "your_mod:custom/saya/sword/saya_sword_custom" },
+  "rapier":  { "your_mod:custom_rapier":  "your_mod:custom/saya/rapier/saya_custom_rapier" }
 }
 ```
 
-値で指定したパスのモデル JSON を本体MOD の `SayaModelWrapper` (BakedModel) が起動時に自動ベイク・キャッシュし、納刀表示時に動的差し替えします。**`custom_model_data` 番号を一切経由しない**ので、いくらでも追加できて他アドオンと衝突しません。
+指定したパスのモデル JSON を本体MOD の `SayaModelWrapper` (BakedModel) が起動時に自動ベイク・キャッシュし、納刀表示時に動的差し替えします。**`custom_model_data` 番号を一切経由しない**ので、いくらでも追加できて他アドオンと衝突しません。
 
-> 仕組み: `ModelEvent.RegisterAdditional` で `assets/<*>/models/custom/saya/{katana,sword,tyokuto}/*.json` を全mod横断で再帰スキャン → 自動ベイク登録 → `ModelEvent.ModifyBakingResult` で本体の3つの saya モデルを SayaModelWrapper に差し替え → 描画時に NBT `StoredSword` → SayaRegistry → カスタムモデル解決。
+> 仕組み: `ModelEvent.RegisterAdditional` で `assets/<*>/models/custom/saya/{katana,sword,tyokuto,rapier}/*.json` を全mod横断で再帰スキャン → 自動ベイク登録 → `ModelEvent.ModifyBakingResult` で本体4種の saya モデルを SayaModelWrapper に差し替え → 描画時に NBT (`StoredKatana` / `StoredSword` / `StoredRapier`) → SayaRegistry → カスタムモデル解決。
+
+> **旧整数方式について** — 値に整数 (鉄=1, 金=2 など) を書く方式も互換のため残っていますが、現在は文字列パス方式に統一されています。新規アイテムでは文字列方式で書いてください。
 
 ### 独自モデルの配置先（規約）
 
@@ -377,12 +362,14 @@ public static final RegistryObject<Item> MY_SWORD =
 assets/<your_mod>/models/custom/saya/katana/saya_xxx.json    # 通常の刀の鞘
 assets/<your_mod>/models/custom/saya/tyokuto/saya_xxx.json   # 直刀の鞘
 assets/<your_mod>/models/custom/saya/sword/saya_xxx.json     # バニラ剣の鞘
+assets/<your_mod>/models/custom/saya/rapier/saya_xxx.json    # レイピアの鞘
 ```
 
 > **ファイル名規約** — 本体MODの命名に揃えると分かりやすい:
 > - 通常刀: `saya_<weapon_name>.json`
 > - 直刀: `saya_<weapon_name>_tyokuto.json`
 > - バニラ剣ベース: `saya_sword_<weapon_name>.json`
+> - レイピア: `saya_<weapon_name>_rapier.json`
 > - `_` で始まるファイル名はスキャンから除外（テンプレ用）
 
 ### モデルの中身
@@ -397,7 +384,7 @@ assets/<your_mod>/models/custom/saya/sword/saya_xxx.json     # バニラ剣の�
 
 これだけで本体MOD の鉄剣鞘テクスチャをそのまま借りられます。BlockBench で独自 3D モデルを作って `elements` を書く場合は、本体MOD の同種モデルを参考にしてください。
 
-サンプル: [saya_sample_sword.json](src/main/resources/assets/the_four_primitives_and_weapons_addons_sample/models/custom/saya/sword/saya_sample_sword.json) が実装デモとして同梱されています。
+サンプル: [saya_sample_sword.json](src/main/resources/assets/the_four_primitives_and_weapons_addons_sample/models/custom/saya/sword/saya_sample_sword.json) が実動デモとして同梱されています。各タイプの空テンプレ (`_example_*.json`) も `custom/saya/{katana,tyokuto,sword,rapier}/` 各サブディレクトリに置いてあるので、`_` を外してリネームすれば使えます。
 
 ---
 

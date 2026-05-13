@@ -7,6 +7,8 @@ REM   run_quick.bat --offline        オフライン実行
 REM   run_quick.bat -o               同上
 setlocal
 
+set "COMMON_FLAGS=-Dnet.minecraftforge.gradle.check.certs=false"
+
 set "GRADLE_OPTS_EXTRA="
 :ARG_LOOP
 if "%~1"=="" goto ARG_DONE
@@ -19,4 +21,4 @@ goto ARG_LOOP
 :ARG_DONE
 
 echo ==^> addon runClient (本体MODは再ビルドしない) %GRADLE_OPTS_EXTRA%
-call gradlew.bat runClient %GRADLE_OPTS_EXTRA%
+call gradlew.bat runClient %GRADLE_OPTS_EXTRA% %COMMON_FLAGS%

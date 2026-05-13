@@ -3,26 +3,26 @@ loaderVersion="[43,)"
 license="MIT"
 
 [[mods]]
-modId="minecraft_armor_weapon_sample"
+modId="the_four_primitives_and_weapons_addons_sample"
 version="1.0.0"
 displayName="MAW Sample Addon"
 description='''
 The four primitives and Weapons のサンプルアドオンです。
 このファイルを参考にアドオンを作成してください。
 '''
-authors="YourName"
+authors="hiromichi-ngs"
 
 # ===== 依存関係 =====
 # [[dependencies.XXX]] の XXX は「このアドオン自身の modId」を書く。
 # 本体MOD「The four primitives and Weapons」の modId は
-# minecraft_armor_weapon だが、このアドオンの modId は
-# minecraft_armor_weapon_sample なので混同注意。
+# the_four_primitives_and_weapons だが、このアドオンの modId は
+# the_four_primitives_and_weapons_addons_sample なので混同注意。
 #
 # 各依存の modId は本体MOD「The four primitives and Weapons」の
 # mods.toml と同じものを使うこと（特に Curios は curios_api）。
 
 # Minecraft 本体
-[[dependencies.minecraft_armor_weapon_sample]]
+[[dependencies.the_four_primitives_and_weapons_addons_sample]]
     modId="minecraft"
     mandatory=true
     versionRange="[1.20.1]"
@@ -30,7 +30,7 @@ authors="YourName"
     side="BOTH"
 
 # Forge
-[[dependencies.minecraft_armor_weapon_sample]]
+[[dependencies.the_four_primitives_and_weapons_addons_sample]]
     modId="forge"
     mandatory=true
     versionRange="[47,)"
@@ -39,8 +39,8 @@ authors="YourName"
 
 # 本体: The four primitives and Weapons（必須依存）
 # 本体が入っていない場合は Forge のmodローダー画面でエラー表示される。
-[[dependencies.minecraft_armor_weapon_sample]]
-    modId="minecraft_armor_weapon"
+[[dependencies.the_four_primitives_and_weapons_addons_sample]]
+    modId="the_four_primitives_and_weapons"
     mandatory=true
     versionRange="[1.0.0,)"
     ordering="AFTER"
@@ -48,7 +48,7 @@ authors="YourName"
 
 # Curios API（任意依存）— 本体MODと同じく curios_api を参照。
 # アクセサリスロット連携が必要なアドオン機能を作るなら mandatory=true に。
-[[dependencies.minecraft_armor_weapon_sample]]
+[[dependencies.the_four_primitives_and_weapons_addons_sample]]
     modId="curios_api"
     mandatory=false
     versionRange="[0,)"
@@ -57,7 +57,7 @@ authors="YourName"
 
 # GeckoLib（任意依存）— 本体MODのアニメーションで使われている。
 # addon側で GeckoLib を直接使うなら mandatory=true に。
-[[dependencies.minecraft_armor_weapon_sample]]
+[[dependencies.the_four_primitives_and_weapons_addons_sample]]
     modId="geckolib"
     mandatory=false
     versionRange="[0,)"
@@ -65,7 +65,7 @@ authors="YourName"
     side="BOTH"
 
 # JEI（任意依存）— 本体MODのレシピ表示で使われている。
-[[dependencies.minecraft_armor_weapon_sample]]
+[[dependencies.the_four_primitives_and_weapons_addons_sample]]
     modId="jei"
     mandatory=false
     versionRange="[0,)"
@@ -73,7 +73,7 @@ authors="YourName"
     side="BOTH"
 
 # Farmer's Delight（任意依存 — なくても動作する）
-[[dependencies.minecraft_armor_weapon_sample]]
+[[dependencies.the_four_primitives_and_weapons_addons_sample]]
     modId="farmersdelight"
     mandatory=false
     versionRange="[1.0.0,)"

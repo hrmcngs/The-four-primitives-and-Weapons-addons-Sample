@@ -10,7 +10,7 @@ description='''
 The four primitives and Weapons のサンプルアドオンです。
 このファイルを参考にアドオンを作成してください。
 '''
-authors="YourName"
+authors="hiromichi-ngs"
 
 # ===== 依存関係 =====
 # [[dependencies.XXX]] の XXX は「このアドオン自身の modId」を書く。
