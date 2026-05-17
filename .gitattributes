@@ -1,0 +1,23 @@
+# どのOSでフォーク / クローンしても、シェルスクリプトがそのまま実行できるよう
+# 改行コードを固定する。
+#
+# これが無いと、Windows でクローンしたとき core.autocrlf により *.sh が CRLF に
+# 変換され、shebang が "#!/bin/bash\r" になって実行時に
+#   bash: ./run_client.sh: No such file or directory
+# というエラーになる。
+
+# 既定: テキストは自動判定し、リポジトリ内では LF に正規化
+* text=auto
+
+# シェルスクリプト / Gradle ラッパーは常に LF（必須）
+*.sh    text eol=lf
+gradlew text eol=lf
+
+# Windows バッチファイルは常に CRLF
+*.bat   text eol=crlf
+
+# バイナリ（改行変換しない）
+*.jar   binary
+*.png   binary
+*.zip   binary
+*.ico   binary
