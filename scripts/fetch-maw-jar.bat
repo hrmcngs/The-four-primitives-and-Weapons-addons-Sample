@@ -23,7 +23,10 @@ set "ADDON_DIR=%CD%"
 popd
 set "DEST_DIR=%ADDON_DIR%\libs\local\%MAW_ARTIFACT%\%MAW_VERSION%"
 set "DEST_JAR=%DEST_DIR%\%MAW_ARTIFACT%-%MAW_VERSION%.jar"
-set "CLONE_DIR=%ADDON_DIR%\.maw-src"
+REM clone先は addon プロジェクトの外に置く（addon 配下だと本体MODビルド時に
+REM Gradle が親の settings.gradle を拾ってビルドエラーになる）
+if "%MAW_CLONE_DIR%"=="" set "MAW_CLONE_DIR=%LOCALAPPDATA%\maw-mod-src"
+set "CLONE_DIR=%MAW_CLONE_DIR%"
 
 set "FORCE="
 set "OFFLINE="

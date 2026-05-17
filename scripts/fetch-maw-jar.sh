@@ -28,7 +28,11 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ADDON_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 DEST_DIR="$ADDON_DIR/libs/local/$MAW_ARTIFACT/$MAW_VERSION"
 DEST_JAR="$DEST_DIR/$MAW_ARTIFACT-$MAW_VERSION.jar"
-CLONE_DIR="$ADDON_DIR/.maw-src"
+# clone先は addon プロジェクトの外に置くこと。addon 配下（.maw-src 等）に
+# clone すると、本体MODをビルドするとき Gradle が親の settings.gradle を拾い
+#   Project directory '.../.maw-src' is not part of the build ...
+# というエラーになりビルドできない。
+CLONE_DIR="${MAW_CLONE_DIR:-$HOME/.cache/maw-mod-src}"
 
 # --- 引数 ---------------------------------------------------------------
 FORCE=""
@@ -98,7 +102,9 @@ else
         git -C "$CLONE_DIR" reset --hard FETCH_HEAD
     else
         echo "[fetch-maw] GitHub から clone: $MAW_REPO_URL ($MAW_REPO_BRANCH)"
+        echo "[fetch-maw]   clone先: $CLONE_DIR"
         rm -rf "$CLONE_DIR"
+        mkdir -p "$(dirname "$CLONE_DIR")"
         # 自己参照する submodule が定義されているため --recurse-submodules は使わない
         git clone --depth 1 --branch "$MAW_REPO_BRANCH" "$MAW_REPO_URL" "$CLONE_DIR"
     fi
