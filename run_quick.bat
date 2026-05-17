@@ -1,17 +1,17 @@
 @echo off
-REM 本体MOD は今ある jar のまま、addon の runClient だけを実行する (高速)
+REM 手元の本体MOD jar のまま addon の runClient を実行する（最速・ネットワーク不要）。
 REM
-REM jar がまだ無い場合だけ scripts\fetch-maw-jar.bat が用意する。
-REM jar が既にあれば何もせず即起動する。
+REM jar の最新化はしない。最新の本体MOD jar を取得したいときは run_client.bat を使う。
 REM
 REM 使い方:
-REM   run_quick.bat                  通常実行
+REM   run_quick.bat                  実行
 REM   run_quick.bat --offline        オフライン実行
 REM   run_quick.bat -o               同上
 setlocal
 cd /d "%~dp0"
 
 set "COMMON_FLAGS=-Dnet.minecraftforge.gradle.check.certs=false"
+set "MAW_JAR=libs\local\the_four_primitives_and_weapons\1.20.1-test\the_four_primitives_and_weapons-1.20.1-test.jar"
 
 set "GRADLE_OPTS_EXTRA="
 :ARG_LOOP
@@ -24,9 +24,11 @@ shift
 goto ARG_LOOP
 :ARG_DONE
 
-echo ==^> 本体MOD jar を確認 %GRADLE_OPTS_EXTRA%
-call "%~dp0scripts\fetch-maw-jar.bat" %GRADLE_OPTS_EXTRA%
-if errorlevel 1 exit /b 1
+if not exist "%MAW_JAR%" (
+    echo [error] 本体MOD jar がありません: %MAW_JAR% 1>&2
+    echo         run_client.bat を実行して jar を取得してください。 1>&2
+    exit /b 1
+)
 
-echo ==^> addon runClient (本体MODは再ビルドしない) %GRADLE_OPTS_EXTRA%
+echo ==^> addon runClient (jar は最新化しない) %GRADLE_OPTS_EXTRA%
 call gradlew.bat runClient %GRADLE_OPTS_EXTRA% %COMMON_FLAGS%
