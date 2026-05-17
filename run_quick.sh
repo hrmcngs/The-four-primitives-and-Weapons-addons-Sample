@@ -1,22 +1,20 @@
 #!/bin/bash
 # 本体MOD は今ある jar のまま、addon の runClient だけを実行する (高速)
 #
+# jar がまだ無い場合だけ scripts/fetch-maw-jar.sh が用意する
+# (ローカルソースをビルド / 無ければ GitHub から clone してビルド)。
+# jar が既にあれば何もせず即起動する。
+#
 # 使い方:
 #   ./run_quick.sh                  通常実行
 #   ./run_quick.sh --offline        オフライン実行
 #   ./run_quick.sh -o               同上
-#
-# どのディレクトリから実行しても動く。
 set -e
 
-# スクリプトの場所 = addon プロジェクトルート。ここへ移動して ./gradlew を確実に見つける。
+# スクリプトの場所 = addon プロジェクトルート。どこから実行しても動くよう移動する。
 ADDON_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$ADDON_DIR"
-
-# gradlew に実行権限を付ける（zip展開やWindows経由のcloneで失われた場合の保険）。
-if [ -f "$ADDON_DIR/gradlew" ] && [ ! -x "$ADDON_DIR/gradlew" ]; then
-    chmod +x "$ADDON_DIR/gradlew" 2>/dev/null || true
-fi
+[ -x ./gradlew ] || chmod +x ./gradlew 2>/dev/null || true
 
 COMMON_FLAGS="-Dnet.minecraftforge.gradle.check.certs=false"
 
@@ -27,6 +25,9 @@ for arg in "$@"; do
         *)            GRADLE_OPTS_EXTRA="$GRADLE_OPTS_EXTRA $arg" ;;
     esac
 done
+
+# jar が無ければ用意（あれば何もしない＝速い）
+"$ADDON_DIR/scripts/fetch-maw-jar.sh" $GRADLE_OPTS_EXTRA
 
 echo "==> addon runClient (本体MODは再ビルドしない)$GRADLE_OPTS_EXTRA"
 exec ./gradlew runClient $GRADLE_OPTS_EXTRA $COMMON_FLAGS

@@ -1,23 +1,19 @@
 @echo off
-REM 本体MOD (The four primitives and Weapons) をビルドし直してから
+REM 本体MOD (The four primitives and Weapons) の jar を用意し直してから
 REM addon の runClient を実行する (フルフロー)
 REM
+REM 本体MOD の jar は scripts\fetch-maw-jar.bat が自動で用意する:
+REM   ローカルにソースがあればビルド / 無ければ GitHub から clone してビルド
+REM
 REM 使い方:
-REM   run_client.bat                  通常実行
-REM   run_client.bat --offline        オフラインビルド
+REM   run_client.bat                  通常実行（本体MODを毎回ビルドし直す）
+REM   run_client.bat --offline        オフライン (clone しない)
 REM   run_client.bat -o               同上
 REM
-REM 本体MOD の場所はデフォルトで %USERPROFILE%\The-four-primitives-and-Weapons
-REM 別の場所にある場合は事前に: set MAW_DIR=C:\path\to\main-mod
+REM 本体MODソースの場所を明示する場合: set MAW_DIR=C:\path\to\main-mod
 setlocal
-
-REM どのフォルダから実行しても gradlew.bat が見つかるよう、スクリプトの場所へ移動する。
 cd /d "%~dp0"
 
-if "%MAW_DIR%"=="" set "MAW_DIR=%USERPROFILE%\The-four-primitives-and-Weapons"
-
-REM ForgeGradle 5.1 (本体MOD) は systemProp 経由で証明書チェック無効化が
-REM 効かないケースがあるので、コマンドラインから -D で確実に渡す。
 set "COMMON_FLAGS=-Dnet.minecraftforge.gradle.check.certs=false"
 
 set "GRADLE_OPTS_EXTRA="
@@ -31,19 +27,9 @@ shift
 goto ARG_LOOP
 :ARG_DONE
 
-if exist "%MAW_DIR%\gradlew.bat" (
-    echo ==^> 本体MODをビルド: %MAW_DIR% %GRADLE_OPTS_EXTRA%
-    pushd "%MAW_DIR%"
-    call gradlew.bat build %GRADLE_OPTS_EXTRA% %COMMON_FLAGS%
-    if errorlevel 1 (
-        popd
-        exit /b 1
-    )
-    popd
-) else (
-    echo [skip] 本体MOD ソースが見つかりません: %MAW_DIR%
-    echo        libs\local\ の既存jarで起動します。
-)
+echo ==^> 本体MOD jar を準備 %GRADLE_OPTS_EXTRA%
+call "%~dp0scripts\fetch-maw-jar.bat" --force %GRADLE_OPTS_EXTRA%
+if errorlevel 1 exit /b 1
 
-echo ==^> addon runClient: %~dp0 %GRADLE_OPTS_EXTRA%
-call gradlew.bat runClient %GRADLE_OPTS_EXTRA% %COMMON_FLAGS% -PmawSourceProject="%MAW_DIR%"
+echo ==^> addon runClient %GRADLE_OPTS_EXTRA%
+call gradlew.bat runClient %GRADLE_OPTS_EXTRA% %COMMON_FLAGS%

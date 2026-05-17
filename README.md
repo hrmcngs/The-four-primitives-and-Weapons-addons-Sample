@@ -42,18 +42,25 @@ assets/the_four_primitives_and_weapons_addons_sample/models/custom/saya/
 
 ## セットアップ手順
 
-### 1. 本体MODのソースを配置
+### 1. 本体MODの jar（自動で用意される）
 
-本体MOD「The four primitives and Weapons」のソースプロジェクトを次のパスに置く（addon の build.gradle がデフォルトで参照する場所）:
+addon のビルドには本体MOD「The four primitives and Weapons」の jar が必要ですが、`scripts/fetch-maw-jar.sh`（Windows は `scripts\fetch-maw-jar.bat`）が自動で用意します。実行スクリプトや GitHub Actions から呼ばれ、次の順で jar を確保します:
+
+1. `libs/local/` に jar が既にあればそれを使う
+2. ローカルに本体MODソースがあればビルドして取り込む
+3. どちらも無ければ GitHub から clone してビルドする
+   （<https://github.com/Drowse-Lab/The-four-primitives-and-Weapons>）
+
+このため **「Use this template」で複製しただけの環境でも、追加準備なしにビルドできます。**
+
+本体MODソースを手元に置いて開発する場合は、次のいずれかの場所に置くと clone せずそのソースをビルドします:
 
 | OS | デフォルトパス |
 |---|---|
 | macOS / Linux / WSL | `~/The-four-primitives-and-Weapons` |
 | Windows | `%USERPROFILE%\The-four-primitives-and-Weapons` |
 
-別の場所に置きたい場合は、addon の [build.gradle](build.gradle) 内の `mawSourceProject` を編集するか、環境変数 `MAW_DIR` を設定するか、`gradle.properties` に `mawSourceProject=/path/...` を書く。
-
-> 既に本体MOD jar を手で `libs/local/the_four_primitives_and_weapons/<version>/` に置いている場合はこの手順を飛ばしてもよい（自動取込は最新を見つけたら上書きする）。
+別の場所に置く場合は、環境変数 `MAW_DIR` を設定するか、`gradle.properties` に `mawSourceProject=/path/...` を書く。
 
 ### 2. Mod ID を自分のものに変える
 
@@ -87,9 +94,9 @@ assets/the_four_primitives_and_weapons_addons_sample/models/custom/saya/
 | 本体MODは再ビルドせず addon を起動 (高速) | `./run_quick.sh` | `run_quick.bat` |
 
 - [run_client.sh](run_client.sh) / [run_client.bat](run_client.bat) は内部で:
-  1. 本体MOD (`$MAW_DIR`) の `./gradlew build` を実行
-  2. addon の `./gradlew runClient` を実行（addon の build.gradle が config phase で本体MOD の最新jarを `libs/local/` に自動コピー）
-- [run_quick.sh](run_quick.sh) / [run_quick.bat](run_quick.bat) は `./gradlew runClient` を呼ぶだけ。本体MOD のソースに触らないので速い。
+  1. `scripts/fetch-maw-jar.sh` で本体MOD jar を用意（ローカルソースをビルド／無ければ GitHub から clone してビルド）
+  2. addon の `./gradlew runClient` を実行
+- [run_quick.sh](run_quick.sh) / [run_quick.bat](run_quick.bat) は jar が無いときだけ用意し、あれば即 `./gradlew runClient`。速い。
 
 > 本体MOD のソース位置がデフォルトと違うとき:
 > - bash: `MAW_DIR=/path/to/main-mod ./run_client.sh`
@@ -108,15 +115,24 @@ run_quick.bat -o
 
 初回はオンラインで `./gradlew build` / `runClient` を一度通してキャッシュを作っておく必要があります（[BUILD_COMMANDS.md §5.4](BUILD_COMMANDS.md) 参照）。
 
-### 自動取込の仕組み
+### 本体MOD jar の自動用意
 
-addon の [build.gradle](build.gradle) は configuration phase で次を行います:
+`scripts/fetch-maw-jar.sh` / `scripts\fetch-maw-jar.bat` が次の順で jar を確保します:
 
-1. `${MAW_DIR}/build/libs/` を探す（デフォルトはホーム直下）
-2. そこに `-sources` / `-dev` / `-javadoc` を含まない最新の jar があり、かつ addon 側の jar より新しければ、`libs/local/the_four_primitives_and_weapons/<version>/the_four_primitives_and_weapons-<version>.jar` にコピー（デフォルト version は `1.20.1-test`）
-3. 本体MOD のソースが無い場合は静かにスキップ（既に libs/local/ にある jar をそのまま使う）
+1. `libs/local/the_four_primitives_and_weapons/1.20.1-test/` に jar があればそれを使う（`--force` で作り直し）
+2. ローカルに本体MODソースがあれば `./gradlew build` してビルド成果物を取り込む
+3. 無ければ GitHub から `--depth 1` で clone（`.maw-src/`）してビルド
 
-つまり「本体MOD を `./gradlew build` した直後に addon の runClient/build を叩けば、勝手に新しい jar が取り込まれる」状態です。
+取り込み時は `-sources` / `-dev` / `-javadoc` を除いた最新 jar を選び、`libs/local/the_four_primitives_and_weapons/1.20.1-test/the_four_primitives_and_weapons-1.20.1-test.jar` に固定名でコピーします（addon の [build.gradle](build.gradle) が参照する場所）。
+
+直接 jar を確保したいときは単体でも実行できます:
+
+```bash
+./scripts/fetch-maw-jar.sh            # jar が無ければ用意
+./scripts/fetch-maw-jar.sh --force    # 既存 jar があっても作り直す
+```
+
+GitHub Actions（[.github/workflows/build.yml](.github/workflows/build.yml)）も同じスクリプトを使い、push するたびに本体MOD jar と addon jar を自動ビルドします。生成物は Actions 実行ページの **Artifacts** からダウンロードできます。
 
 ### 直接 gradle を叩く場合
 

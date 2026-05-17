@@ -32,3 +32,6 @@ build/
 .gradle/
 run/
 
+# 本体MOD の自動clone先 (scripts/fetch-maw-jar.sh)
+.maw-src/
+
