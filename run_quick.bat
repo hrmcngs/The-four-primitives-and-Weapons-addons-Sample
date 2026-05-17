@@ -7,6 +7,9 @@ REM   run_quick.bat --offline        オフライン実行
 REM   run_quick.bat -o               同上
 setlocal
 
+REM どのフォルダから実行しても gradlew.bat が見つかるよう、スクリプトの場所へ移動する。
+cd /d "%~dp0"
+
 set "COMMON_FLAGS=-Dnet.minecraftforge.gradle.check.certs=false"
 
 set "GRADLE_OPTS_EXTRA="

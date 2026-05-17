@@ -11,6 +11,9 @@ REM 本体MOD の場所はデフォルトで %USERPROFILE%\The-four-primitives-a
 REM 別の場所にある場合は事前に: set MAW_DIR=C:\path\to\main-mod
 setlocal
 
+REM どのフォルダから実行しても gradlew.bat が見つかるよう、スクリプトの場所へ移動する。
+cd /d "%~dp0"
+
 if "%MAW_DIR%"=="" set "MAW_DIR=%USERPROFILE%\The-four-primitives-and-Weapons"
 
 REM ForgeGradle 5.1 (本体MOD) は systemProp 経由で証明書チェック無効化が
@@ -43,4 +46,4 @@ if exist "%MAW_DIR%\gradlew.bat" (
 )
 
 echo ==^> addon runClient: %~dp0 %GRADLE_OPTS_EXTRA%
-call gradlew.bat runClient %GRADLE_OPTS_EXTRA% %COMMON_FLAGS%
+call gradlew.bat runClient %GRADLE_OPTS_EXTRA% %COMMON_FLAGS% -PmawSourceProject="%MAW_DIR%"
