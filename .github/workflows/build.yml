@@ -10,6 +10,10 @@ on:
   pull_request:
   workflow_dispatch:
 
+# 既定の GITHUB_TOKEN を最小権限に絞る（checkout と artifact アップロードのみ）
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
