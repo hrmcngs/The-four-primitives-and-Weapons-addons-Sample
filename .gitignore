@@ -28,7 +28,8 @@ bin/
 .settings/
 
 # Gradle / Forge
-build/
+build/*
+!build/libs/
 .gradle/
 run/
 
