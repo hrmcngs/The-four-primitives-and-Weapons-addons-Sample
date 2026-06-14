@@ -4,7 +4,7 @@
 	"texture_size": [32, 32],
 	"textures": {
 		"2": "the_four_primitives_and_weapons_addons_sample:item/sample_sword",
-		"particle": "minecraft:block/iron_sword"
+		"particle": "block/iron_sword"
 	},
 	"elements": [
 		{
