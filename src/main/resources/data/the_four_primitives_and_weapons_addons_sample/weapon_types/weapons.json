@@ -36,6 +36,28 @@
       "items": [
         "the_four_primitives_and_weapons_addons_sample:sample_sword"
       ]
+    },
+
+    "sample_blade": {
+      "_comment": "独自タイプの例。 新タイプなので motions を定義する。 このタイプの attack_speed/attack_range は weapon_stats の types.sample_blade で一括設定でき、所属アイテムは書かなくても継承する。",
+      "display_name": "サンプル刃",
+      "items": [
+        "the_four_primitives_and_weapons_addons_sample:my_katana",
+        "the_four_primitives_and_weapons_addons_sample:my_rapier",
+        "the_four_primitives_and_weapons_addons_sample:my_tyokuto"
+      ],
+      "motions": {
+        "combat": ["thrust", "upper_left_slash", "upper_right_slash", "horizontal_slash", "spin_slash"],
+        "dash": ["dash_rush", "leap_slash", "shadow_step"],
+        "right_click": ["dodge", "none_right", "spell"],
+        "shift_right_click": ["guard", "none_shift"]
+      },
+      "default_motions": {
+        "first_hit": "upper_left_slash",
+        "second_hit": "upper_right_slash",
+        "third_hit": "horizontal_slash",
+        "charged": "spin_slash"
+      }
     }
 
   }
