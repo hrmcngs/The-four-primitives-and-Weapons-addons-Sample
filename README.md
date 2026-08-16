@@ -11,7 +11,10 @@ src/main/java/mawaddon/
 │   └── AddonItems.java               アイテム登録
 ├── item/
 │   ├── SampleSwordItem.java          サンプル剣（カスタムアイテムの実装例）
-│   └── DaggerItem.java               ダガー（背後攻撃特化）
+│   ├── DaggerItem.java               ダガー（背後攻撃特化）
+│   ├── SampleKatanaItem.java         刀テンプレート
+│   ├── SampleRapierItem.java         細剣テンプレート
+│   └── SampleTyokutoItem.java        直刀テンプレート
 ├── event/
 │   └── SampleEventHandler.java       イベントハンドラのサンプル
 └── compat/
@@ -23,12 +26,15 @@ src/main/resources/
 │   ├── lang/
 │   │   ├── ja_jp.json                日本語翻訳
 │   │   └── en_us.json                英語翻訳
-│   └── models/item/
-│       ├── sample_sword.json         サンプル剣モデル
-│       └── dagger.json               ダガーモデル
+│   ├── models/item/                  各アイテムモデル
+│   ├── models/custom/weapon/         武器種別の組み立てモデル
+│   └── textures/                     blade と武器種別 fitting
 └── data/the_four_primitives_and_weapons_addons_sample/
     ├── weapon_types/
-    │   └── weapons.json              ★ 武器タイプ宣言
+    │   ├── weapon_types.json         ★ 武器タイプ宣言
+    │   └── preferred_motions.jsonc   ★ 技適性
+    ├── weapon_stats/
+    │   └── weapon_stats.json         ★ 武器能力値
     └── maw_saya/
         └── saya.jsonc                ★ 鞘(納刀)対象アイテム宣言
 
@@ -41,6 +47,16 @@ assets/the_four_primitives_and_weapons_addons_sample/models/custom/saya/
 ```
 
 ## セットアップ手順
+
+### 最短手順: 雛形と武器をコマンドで生成
+
+```bash
+npm run create-addon -- ../my-addon
+cd ../my-addon
+npm run create-weapon
+```
+
+`create-weapon` は `dagger`、`katana`、`rapier`、`tyokuto` に対応し、Javaクラス、登録、モデル、翻訳、武器タイプ、能力値を一括生成します。詳しくは [雛形ジェネレーター](docs/create-addon.md) を参照してください。
 
 ### 1. 本体MODの jar（自動で用意される）
 
@@ -217,7 +233,7 @@ public static final RegistryObject<Item> MY_SWORD =
 
 ### 3. 武器を「武器タイプ」に登録する（スキル割当て）
 
-[data/&lt;modid&gt;/weapon_types/weapons.json](src/main/resources/data/the_four_primitives_and_weapons_addons_sample/weapon_types/weapons.json) に書くだけで、本体の `WeaponTypeRegistry` が起動時に拾います。既存タイプ (`katana` `sword` `dagger` `rapier` `tyokuto` `bow` `crossbow` `throwing` `trident` `greatsword` `shield`) に乗せれば、その武器タイプのスキル一覧が `K キー` のスキル選択画面に出ます。
+[data/&lt;modid&gt;/weapon_types/weapon_types.json](src/main/resources/data/the_four_primitives_and_weapons_addons_sample/weapon_types/weapon_types.json) に書くだけで、本体の `WeaponTypeRegistry` が起動時に拾います。既存タイプ (`katana` `sword` `dagger` `rapier` `straight_sword` `bow` `crossbow` `throwing` `trident` `greatsword` `shield`) に乗せれば、その武器タイプのスキル一覧が `K キー` のスキル選択画面に出ます。
 
 ```json
 {
@@ -289,7 +305,7 @@ public static final RegistryObject<Item> MY_SWORD =
 ### 既存タイプにアイテムを追加する
 
 ```json
-// data/your_mod/weapon_types/weapons.json
+// data/your_mod/weapon_types/weapon_types.json
 {
   "types": {
     "dagger": {
@@ -411,7 +427,7 @@ assets/<your_mod>/models/custom/saya/rapier/saya_xxx.json    # レイピアの�
 - FDのナイフで動物を倒すと、本体の難易度に応じてボーナスドロップ（革・羽）が発生
 - `FarmersDelightCompat.isFDLoaded()` でFDの有無を確認できます
 
-FDのナイフは [data/the_four_primitives_and_weapons_addons_sample/weapon_types/weapons.json](src/main/resources/data/the_four_primitives_and_weapons_addons_sample/weapon_types/weapons.json) で `dagger` タイプに登録済みです。
+FDのナイフは [weapon_types.json](src/main/resources/data/the_four_primitives_and_weapons_addons_sample/weapon_types/weapon_types.json) で `dagger` タイプに登録済みです。
 
 ---
 

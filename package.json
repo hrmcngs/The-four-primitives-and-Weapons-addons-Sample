@@ -8,7 +8,8 @@
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
-    "create-addon": "node scripts/create-addon.mjs"
+    "create-addon": "node scripts/create-addon.mjs",
+    "create-weapon": "node scripts/create-weapon.mjs"
   },
   "devDependencies": {
     "vitepress": "next"

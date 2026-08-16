@@ -1,0 +1,73 @@
+{
+  "_comment": [
+    "アドオンの武器タイプ定義。既存タイプへの追加と独自タイプの定義を同じ形式で記述できる。",
+    "sample_katana / sample_rapier / sample_tyokuto は本体の各武器構成をアドオンへ適用した実例。"
+  ],
+  "types": {
+    "dagger": {
+      "display_name": "短剣",
+      "items": [
+        "the_four_primitives_and_weapons_addons_sample:dagger",
+        "farmersdelight:flint_knife",
+        "farmersdelight:iron_knife",
+        "farmersdelight:golden_knife",
+        "farmersdelight:diamond_knife",
+        "farmersdelight:netherite_knife"
+      ]
+    },
+    "sword": {
+      "display_name": "剣",
+      "items": [
+        "the_four_primitives_and_weapons_addons_sample:sample_sword"
+      ]
+    },
+    "sample_katana": {
+      "display_name": "サンプル刀",
+      "items": [
+        "the_four_primitives_and_weapons_addons_sample:sample_katana"
+      ],
+      "motions": {
+        "combat": ["thrust", "upper_left_slash", "upper_right_slash", "horizontal_slash", "spin_slash"],
+        "dash": ["dash_rush", "leap_slash", "shadow_step"],
+        "right_click": ["dodge", "none_right", "spell"],
+        "shift_right_click": ["guard", "none_shift"]
+      },
+      "default_motions": {
+        "first_hit": "upper_left_slash",
+        "second_hit": "upper_right_slash",
+        "third_hit": "horizontal_slash",
+        "charged": "spin_slash",
+        "dash": "dash_rush",
+        "right_click": "dodge",
+        "shift_right_click": "guard"
+      }
+    },
+    "sample_rapier": {
+      "display_name": "サンプル細剣",
+      "items": ["the_four_primitives_and_weapons_addons_sample:sample_rapier"],
+      "motions": {
+        "combat": ["thrust", "upper_left_slash", "upper_right_slash"],
+        "dash": ["dash_rush", "leap_slash", "shadow_step"],
+        "right_click": ["dodge", "none_right", "spell"],
+        "shift_right_click": ["guard", "none_shift"]
+      },
+      "default_motions": {
+        "first_hit": "thrust", "second_hit": "thrust", "third_hit": "thrust", "charged": "thrust"
+      }
+    },
+    "sample_tyokuto": {
+      "display_name": "サンプル直刀",
+      "items": ["the_four_primitives_and_weapons_addons_sample:sample_tyokuto"],
+      "motions": {
+        "combat": ["thrust", "upper_left_slash", "upper_right_slash", "horizontal_slash", "spin_slash"],
+        "dash": ["dash_rush", "leap_slash", "shadow_step"],
+        "right_click": ["dodge", "none_right", "spell"],
+        "shift_right_click": ["guard", "none_shift"]
+      },
+      "default_motions": {
+        "first_hit": "thrust", "second_hit": "thrust", "third_hit": "thrust", "charged": "thrust",
+        "dash": "dash_rush", "right_click": "dodge", "shift_right_click": "guard"
+      }
+    }
+  }
+}

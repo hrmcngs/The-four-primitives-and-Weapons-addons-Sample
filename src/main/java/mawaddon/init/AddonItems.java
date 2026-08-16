@@ -3,6 +3,9 @@ package mawaddon.init;
 import mawaddon.MawSampleAddon;
 import mawaddon.item.DaggerItem;
 import mawaddon.item.SampleSwordItem;
+import mawaddon.item.SampleKatanaItem;
+import mawaddon.item.SampleRapierItem;
+import mawaddon.item.SampleTyokutoItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -29,6 +32,16 @@ public class AddonItems {
     // ダガー — 背後攻撃特化の短剣
     public static final RegistryObject<Item> DAGGER =
         REGISTRY.register("dagger", DaggerItem::new);
+
+    // 刃・鍔・柄・頭を差し替えられる組み立て式の刀
+    public static final RegistryObject<Item> SAMPLE_KATANA =
+        REGISTRY.register("sample_katana", SampleKatanaItem::new);
+
+    public static final RegistryObject<Item> SAMPLE_RAPIER =
+        REGISTRY.register("sample_rapier", SampleRapierItem::new);
+
+    public static final RegistryObject<Item> SAMPLE_TYOKUTO =
+        REGISTRY.register("sample_tyokuto", SampleTyokutoItem::new);
 
     // ここに新しいアイテムを追加してください
     // public static final RegistryObject<Item> MY_ITEM =

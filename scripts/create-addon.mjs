@@ -40,8 +40,7 @@ const EXCLUDES = new Set([
   'libs/local',
   // npm 生成物
   'package-lock.json',
-  // ジェネレーター自身は新規プロジェクトには不要
-  'scripts/create-addon.mjs',
+  // create-addon / create-weapon は生成後も再利用できるよう同梱する
 ]);
 
 // 中身置換の対象外（バイナリ等）。拡張子で判定。

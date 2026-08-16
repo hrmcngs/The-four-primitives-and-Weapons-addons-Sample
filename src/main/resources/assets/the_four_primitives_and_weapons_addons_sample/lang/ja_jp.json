@@ -1,4 +1,7 @@
 {
   "item.the_four_primitives_and_weapons_addons_sample.sample_sword": "サンプルソード",
-  "item.the_four_primitives_and_weapons_addons_sample.dagger": "ダガー"
+  "item.the_four_primitives_and_weapons_addons_sample.dagger": "ダガー",
+  "item.the_four_primitives_and_weapons_addons_sample.sample_katana": "サンプル刀",
+  "item.the_four_primitives_and_weapons_addons_sample.sample_rapier": "サンプル細剣",
+  "item.the_four_primitives_and_weapons_addons_sample.sample_tyokuto": "サンプル直刀"
 }

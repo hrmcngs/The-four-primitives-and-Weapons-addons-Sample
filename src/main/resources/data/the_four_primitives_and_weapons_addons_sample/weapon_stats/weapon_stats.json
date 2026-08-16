@@ -1,0 +1,26 @@
+{
+  "_comment": [
+    "武器能力値。types の既定値より weapons のアイテム別設定が優先される。",
+    "durability: 0 は耐久無限。damage_bonus と attack_damage は同時に指定しない。"
+  ],
+  "types": {
+    "sample_katana": {
+      "attack_speed": -2.4
+    },
+    "sample_rapier": { "attack_speed": -1.8, "attack_range": 0.5 },
+    "sample_tyokuto": { "attack_speed": -2.4 }
+  },
+  "weapons": {
+    "the_four_primitives_and_weapons_addons_sample:sample_katana": {
+      "durability": 250,
+      "enchantability": 14,
+      "damage_bonus": 3
+    },
+    "the_four_primitives_and_weapons_addons_sample:sample_rapier": {
+      "durability": 250, "enchantability": 14, "damage_bonus": 2
+    },
+    "the_four_primitives_and_weapons_addons_sample:sample_tyokuto": {
+      "durability": 250, "enchantability": 14, "damage_bonus": 3
+    }
+  }
+}

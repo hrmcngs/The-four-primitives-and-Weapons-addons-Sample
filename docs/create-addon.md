@@ -57,7 +57,7 @@ node scripts/create-addon.mjs ../my-addon \
 - `.git/`, `.gradle/`, `build/`, `run/`, `bin/`, `node_modules/`
 - `libs/local/`（本体MOD jar — `scripts/fetch-maw-jar.sh` で取り直す）
 - `package-lock.json`（`npm install` で再生成）
-- `scripts/create-addon.mjs` 自身
+- ジェネレーターは生成先にも同梱され、さらに別の雛形や武器を作成できます
 
 ## 生成後の手順
 
@@ -70,6 +70,20 @@ bash scripts/fetch-maw-jar.sh
 # ビルド
 ./gradlew build
 ```
+
+## 武器を追加する
+
+生成したアドオンのディレクトリで次を実行すると、Java登録、モデル、翻訳、武器タイプ、能力値がまとめて追加されます。
+
+```bash
+npm run create-weapon -- \
+  --type katana \
+  --id moon_katana \
+  --name 月光刀 \
+  --name-en "Moon Katana"
+```
+
+`--type` は `dagger`、`katana`、`rapier`、`tyokuto` に対応しています。オプションを省略すると対話形式で入力できます。生成後は案内されたモデルJSONの `textures` を、自分で配置したPNGへ変更するだけです。
 
 ## 例
 

@@ -1,0 +1,18 @@
+// 各サンプル武器の技適性。未記載の技は通常扱い。
+{
+  "preferred_motions": {
+    "sample_katana": ["upper_left_slash", "upper_right_slash"],
+    "sample_rapier": ["thrust"],
+    "sample_tyokuto": ["thrust"]
+  },
+  "normal_motions": {
+    "sample_katana": ["horizontal_slash", "spin_slash"],
+    "sample_rapier": ["upper_left_slash", "upper_right_slash"],
+    "sample_tyokuto": ["upper_left_slash", "upper_right_slash", "horizontal_slash", "spin_slash"]
+  },
+  "disliked_motions": {
+    "sample_katana": ["thrust"],
+    "sample_rapier": ["spin_slash", "slam_down"],
+    "sample_tyokuto": ["slam_down"]
+  }
+}
