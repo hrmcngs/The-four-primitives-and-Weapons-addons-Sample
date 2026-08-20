@@ -83,9 +83,9 @@ if not exist "%MAW_SRC%\gradlew.bat" (
     exit /b 1
 )
 
-echo [fetch-maw] 本体MODをビルド中... ^(初回は数分かかります^)
+echo [fetch-maw] 本体MODをアドオン用 1.20.1-test でビルド中... ^(初回は数分かかります^)
 pushd "%MAW_SRC%"
-call gradlew.bat build --no-daemon -Dnet.minecraftforge.gradle.check.certs=false %GRADLE_EXTRA%
+call gradlew.bat build --no-daemon -Dnet.minecraftforge.gradle.check.certs=false -Pmod_version_override=1.20.1-test -Parchive_version_override=test %GRADLE_EXTRA%
 set "BUILD_RC=%ERRORLEVEL%"
 popd
 if not "%BUILD_RC%"=="0" exit /b %BUILD_RC%

@@ -1,6 +1,7 @@
 package mawaddon.init;
 
 import mawaddon.MawSampleAddon;
+import mawaddon.item.GrayKatanaItem;
 import mawaddon.item.DaggerItem;
 import mawaddon.item.SampleSwordItem;
 import mawaddon.item.SampleKatanaItem;
@@ -42,6 +43,9 @@ public class AddonItems {
 
     public static final RegistryObject<Item> SAMPLE_TYOKUTO =
         REGISTRY.register("sample_tyokuto", SampleTyokutoItem::new);
+
+    public static final RegistryObject<Item> GRAY_KATANA =
+        REGISTRY.register("gray_katana", GrayKatanaItem::new);
 
     // ここに新しいアイテムを追加してください
     // public static final RegistryObject<Item> MY_ITEM =

@@ -56,7 +56,7 @@ cd ../my-addon
 npm run create-weapon
 ```
 
-`create-weapon` は `dagger`、`katana`、`rapier`、`tyokuto` に対応し、Javaクラス、登録、モデル、翻訳、武器タイプ、能力値を一括生成します。詳しくは [雛形ジェネレーター](docs/create-addon.md) を参照してください。
+`create-weapon` は `dagger`、`katana`、`rapier`、`tyokuto` に対応し、Javaクラス、登録、モデル、翻訳、武器タイプ、能力値、クリエイティブタブ、鞘への納刀設定を一括生成します。`--creative-tab` で表示先タブを指定できます。全武器で通常のiron刀身をグレーの基準色として、`--blade-color` に色名または `#RRGGBB` を指定できます。柄・鍔・頭などの拵えも、本体MODの染色機能で任意色にできます。詳しくは [雛形ジェネレーター](docs/create-addon.md) を参照してください。
 
 ### 1. 本体MODの jar（自動で用意される）
 

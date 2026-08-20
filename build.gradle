@@ -150,13 +150,6 @@ dependencies {
     // =====================================================================
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
-
-    // =====================================================================
-    // GeckoLib — 本体MODの任意依存（アニメーション）
-    //   コンパイル時もruntimeもロード（本体MODはこれを implementation 指定）
-    // =====================================================================
-    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-1.20.1:${geckolib_version}")
-
     // =====================================================================
     // JEI — 本体MODの任意依存（レシピUI）
     //   API はコンパイル用、forge本体は runtimeOnly。

@@ -117,9 +117,11 @@ if [ ! -f "$MAW_SRC/gradlew" ]; then
     exit 1
 fi
 chmod +x "$MAW_SRC/gradlew" 2>/dev/null || true
-echo "[fetch-maw] 本体MODをビルド中... (初回は数分かかります)"
+echo "[fetch-maw] 本体MODをアドオン用 1.20.1-test でビルド中... (初回は数分かかります)"
 ( cd "$MAW_SRC" && ./gradlew build --no-daemon \
-    -Dnet.minecraftforge.gradle.check.certs=false $GRADLE_EXTRA )
+    -Dnet.minecraftforge.gradle.check.certs=false \
+    -Pmod_version_override=1.20.1-test \
+    -Parchive_version_override=test $GRADLE_EXTRA )
 
 # --- ビルド成果物の jar を探す（sources / dev / javadoc を除く最新）-----
 latest=""

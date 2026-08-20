@@ -1,6 +1,9 @@
 #!/bin/bash
-# 本体MOD jar を origin の最新版に強制更新してから addon の runClient を実行する。
+# ローカルの本体MODソースを優先してjarを更新してから addon の runClient を実行する。
 #
+# 本体MODソースがアドオンの隣、$MAW_DIR、または標準配置にある場合は、
+# そのローカル変更を固定の 1.20.1-test バージョンでビルドしてjarへ取り込む。
+# ソースが無い場合だけoriginのjarを使う。
 # 本体MOD jar はこのリポジトリに
 #   libs/local/the_four_primitives_and_weapons/1.20.1-test/the_four_primitives_and_weapons-1.20.1-test.jar
 # としてコミットされている。このスクリプトは git fetch でその jar ファイル "だけ" を
@@ -29,9 +32,16 @@ for arg in "$@"; do
     esac
 done
 
-# --- 本体MOD jar を origin の最新版で強制更新（jar ファイルのみ）---------
+# --- 本体MOD jar を更新 --------------------------------------------------
 if [ -n "$OFFLINE" ]; then
     echo "==> --offline: jar の更新をスキップ。手元の jar を使用します"
+elif [ -x "${MAW_DIR:-}/gradlew" ]; then
+    echo "==> ローカルの本体MODをビルド: $MAW_DIR"
+    MAW_DIR="$MAW_DIR" bash scripts/fetch-maw-jar.sh --force
+elif [ -x "$(dirname "$ADDON_DIR")/The-four-primitives-and-Weapons/gradlew" ]; then
+    local_maw="$(dirname "$ADDON_DIR")/The-four-primitives-and-Weapons"
+    echo "==> ローカルの本体MODをビルド: $local_maw"
+    MAW_DIR="$local_maw" bash scripts/fetch-maw-jar.sh --force
 elif ! git rev-parse --git-dir >/dev/null 2>&1; then
     echo "==> git 管理下でないため jar 更新をスキップ。手元の jar を使用します"
 else

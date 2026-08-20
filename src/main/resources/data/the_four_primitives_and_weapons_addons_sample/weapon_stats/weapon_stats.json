@@ -7,8 +7,13 @@
     "sample_katana": {
       "attack_speed": -2.4
     },
-    "sample_rapier": { "attack_speed": -1.8, "attack_range": 0.5 },
-    "sample_tyokuto": { "attack_speed": -2.4 }
+    "sample_rapier": {
+      "attack_speed": -1.8,
+      "attack_range": 0.5
+    },
+    "sample_tyokuto": {
+      "attack_speed": -2.4
+    }
   },
   "weapons": {
     "the_four_primitives_and_weapons_addons_sample:sample_katana": {
@@ -17,10 +22,19 @@
       "damage_bonus": 3
     },
     "the_four_primitives_and_weapons_addons_sample:sample_rapier": {
-      "durability": 250, "enchantability": 14, "damage_bonus": 2
+      "durability": 250,
+      "enchantability": 14,
+      "damage_bonus": 2
     },
     "the_four_primitives_and_weapons_addons_sample:sample_tyokuto": {
-      "durability": 250, "enchantability": 14, "damage_bonus": 3
+      "durability": 250,
+      "enchantability": 14,
+      "damage_bonus": 3
+    },
+    "the_four_primitives_and_weapons_addons_sample:gray_katana": {
+      "durability": 250,
+      "enchantability": 14,
+      "damage_bonus": 3
     }
   }
 }
