@@ -56,10 +56,12 @@ if (mawSourceJarDir.exists()) {
                        && !it.name.contains('-dev')
                        && !it.name.contains('-javadoc') }
             .max { it.lastModified() }
-    if (latestJar != null && (!mawDestFile.exists() || latestJar.lastModified() > mawDestFile.lastModified())) {
+    // バージョン名や更新日時が同じ（またはコピー先の方が新しい）場合でも、
+    // 本体側で再ビルドされた内容を確実に addon の開発環境へ反映する。
+    if (latestJar != null) {
         mawDestDir.mkdirs()
         mawDestFile.bytes = latestJar.bytes
-        println "[addon] 本体MOD jar を取り込みました: ${latestJar.name} → ${mawDestFile.name}"
+        println "[addon] 本体MOD jar を同期しました: ${latestJar.name} → ${mawDestFile.name}"
     }
 } else {
     if (!mawDestFile.exists()) {

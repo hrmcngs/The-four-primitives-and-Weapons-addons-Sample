@@ -22,9 +22,6 @@ public class GrayKatanaItem extends SwordItem {
 
     private static void applyDefaultColors(ItemStack stack) {
         CompoundTag tag = stack.getOrCreateTag();
-        if (!tag.contains(KatanaFittings.BLADE_KEY, Tag.TAG_INT)) {
-            KatanaFittings.setBlade(stack, 0x708090);
-        }
         if (!tag.contains(KatanaFittings.TSUKA_KEY, Tag.TAG_INT)) {
             KatanaFittings.setTsuka(stack, 0xFFFFFF);
         }
