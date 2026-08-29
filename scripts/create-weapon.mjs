@@ -7,9 +7,13 @@ import path from 'node:path';
 import readline from 'node:readline/promises';
 import { argv, cwd, stdin, stdout } from 'node:process';
 
-const MODID = 'the_four_primitives_and_weapons_addons_sample';
-const JAVA_PACKAGE = 'mawaddon';
 const ROOT = cwd();
+const projectConfig = JSON.parse(await fs.readFile(path.join(ROOT, '.maw-addon.json'), 'utf8'));
+const MODID = projectConfig.modId;
+const JAVA_PACKAGE = projectConfig.javaPackage;
+if (!MODID || !JAVA_PACKAGE) {
+  throw new Error('.maw-addon.json に modId と javaPackage を設定してください');
+}
 const IRON_BLADE_TEXTURES = {
   dagger: 'iron_dagger',
   katana: 'katanairon3d',
@@ -109,6 +113,12 @@ async function assertMissing(file) {
 }
 
 async function main() {
+  if (argv.includes('--help') || argv.includes('-h')) {
+    console.log('使い方: npm run create-weapon -- [--type 種類] [--id ID] [各種オプション]');
+    console.log('種類: dagger, katana, rapier, tyokuto');
+    console.log('最新版を取得しない場合: npm run create-weapon:offline -- [オプション]');
+    return;
+  }
   const flags = argsMap();
   const rl = readline.createInterface({ input: stdin, output: stdout });
   const ask = async (key, text, fallback = '') => flags[key] || (await rl.question(`${text}${fallback ? ` [${fallback}]` : ''}: `)).trim() || fallback;
