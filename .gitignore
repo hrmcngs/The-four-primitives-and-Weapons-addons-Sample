@@ -35,9 +35,9 @@ run/
 
 # 本体MOD の自動clone先 (scripts/fetch-maw-jar.sh)
 .maw-src/
+.maw-tools/
 
 # Node.js / VitePress
 node_modules/
 docs/.vitepress/dist/
 docs/.vitepress/cache/
-

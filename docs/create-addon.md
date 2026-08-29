@@ -57,7 +57,44 @@ node scripts/create-addon.mjs ../my-addon \
 - `.git/`, `.gradle/`, `build/`, `run/`, `bin/`, `node_modules/`
 - `libs/local/`（本体MOD jar — `scripts/fetch-maw-jar.sh` で取り直す）
 - `package-lock.json`（`npm install` で再生成）
-- ジェネレーターは生成先にも同梱され、さらに別の雛形や武器を作成できます
+- コマンドランナーだけが生成先に含まれ、武器生成コマンド本体は含まれません
+
+## コマンドの更新方法
+
+`npm run create-weapon` は、実行時にこのサンプルリポジトリの `commands` ブランチから最新版を取得し、`.maw-tools/` にキャッシュしてから実行します。コマンド本体は既定の `main` ブランチに置かないため、GitHub の「Use this template」で作ったリポジトリにはコピーされません。生成済みアドオンを作り直さなくても武器生成コマンドの更新を利用できます。
+
+ネットワークに接続できない場合は、前回取得したキャッシュへ自動的に切り替わります。初回だけはオンラインでの取得が必要です。明示的に通信せず実行する場合は次を使います。
+
+```bash
+npm run create-weapon:offline
+```
+
+取得元とブランチは `.maw-addon.json` の `commands.repository` / `commands.ref` で固定できます。一時的に変更する場合は `MAW_COMMANDS_REPOSITORY`、`MAW_COMMANDS_REF`、`MAW_COMMANDS_BASE_URL` 環境変数も利用できます。
+
+### 新しいコマンドの追加
+
+`commands` ブランチへ `scripts/<コマンド名>.mjs` を追加すると、すでに Use template で作成済みのリポジトリからも次の形式で実行できます。
+
+```bash
+./maw <コマンド名>
+```
+
+コマンド名には小文字英数字とハイフンを使用します。ランナーや生成済みリポジトリの更新は不要です。
+
+`scripts/commands.json` にコマンド名、説明、候補に出したいオプションも登録します。利用者は `./maw help` で一覧を確認でき、次の設定でTab補完を有効にできます。
+
+```bash
+# zsh
+source <(./maw completion zsh)
+
+# bash
+source <(./maw completion bash)
+```
+
+```powershell
+# PowerShell
+Invoke-Expression (& .\maw completion powershell | Out-String)
+```
 
 ## 生成後の手順
 
@@ -76,7 +113,7 @@ bash scripts/fetch-maw-jar.sh
 生成したアドオンのディレクトリで次を実行すると、Java登録、モデル、翻訳、武器タイプ、能力値がまとめて追加されます。
 
 ```bash
-npm run create-weapon -- \
+./maw create-weapon \
   --type katana \
   --id moon_katana \
   --name 月光刀 \
@@ -87,6 +124,8 @@ npm run create-weapon -- \
   --tsuba-color "#708090" \
   --kasira-color 1a1a1a
 ```
+
+Windows では `maw create-weapon ...` と入力します。Node.js 18 以上があれば依存関係のインストールは不要です。`npm run create-weapon -- ...` も引き続き利用できます。
 
 `--type` は `dagger`、`katana`、`rapier`、`tyokuto` に対応しています。オプションを省略すると対話形式で入力できます。生成後は案内されたモデルJSONの `textures` を、自分で配置したPNGへ変更するだけです。
 

@@ -9,7 +9,8 @@
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "create-addon": "node scripts/create-addon.mjs",
-    "create-weapon": "node scripts/create-weapon.mjs"
+    "create-weapon": "node scripts/run-command.mjs create-weapon",
+    "create-weapon:offline": "node scripts/run-command.mjs create-weapon --offline"
   },
   "devDependencies": {
     "vitepress": "next"

@@ -1,0 +1,8 @@
+{
+  "modId": "the_four_primitives_and_weapons_addons_sample",
+  "javaPackage": "mawaddon",
+  "commands": {
+    "repository": "hrmcngs/The-four-primitives-and-Weapons-addons-Sample",
+    "ref": "commands"
+  }
+}

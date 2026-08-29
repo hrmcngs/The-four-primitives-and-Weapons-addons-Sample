@@ -34,13 +34,14 @@ const TEMPLATE = {
 const EXCLUDES = new Set([
   '.git', '.gradle', 'build', 'run', 'bin', 'node_modules',
   '.maw-src', '.DS_Store',
+  '.maw-tools',
   // 出力先がテンプレ内に作られた場合を弾く保険
   'docs/.vitepress/dist', 'docs/.vitepress/cache',
   // 本体MOD jar はユーザーが fetch-maw-jar で取り直すべきもの
   'libs/local',
   // npm 生成物
   'package-lock.json',
-  // create-addon / create-weapon は生成後も再利用できるよう同梱する
+  // create-weapon の本体は commands ブランチから実行時に取得する
 ]);
 
 // 中身置換の対象外（バイナリ等）。拡張子で判定。
@@ -256,6 +257,8 @@ async function main() {
         const replaced = applyReplacements(buf, cfg);
         await fs.writeFile(dest, replaced);
       }
+      const sourceStat = await fs.stat(abs);
+      await fs.chmod(dest, sourceStat.mode & 0o777);
       copied++;
     }
 
