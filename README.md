@@ -58,7 +58,7 @@ cd ../my-addon
 
 Windows のコマンドプロンプト／PowerShellでは `maw create-weapon` を実行します。Node.js 18 以上があれば `npm install` は不要です。従来の `npm run create-weapon` も利用できます。
 
-`commands` ブランチの `scripts/<コマンド名>.mjs` に新しいコマンドを追加すると、既存の Use template リポジトリでも `./maw <コマンド名>` で即時利用できます。ランナー側へのコマンド名追加は不要です。
+コマンド専用の [MAW Addon Commands](https://github.com/hrmcngs/The-four-primitives-and-Weapons-addon-commands) リポジトリへ `scripts/<コマンド名>.mjs` を追加すると、既存の Use template リポジトリでも `./maw <コマンド名>` で即時利用できます。ランナー側へのコマンド名追加は不要です。
 
 コマンド一覧と使い方は `./maw help` で確認できます。ターミナル補完を有効にすると、TabキーでMODコマンド名やオプションを選択できます。
 
@@ -80,7 +80,7 @@ Invoke-Expression (& .\maw completion powershell | Out-String)
 
 `create-weapon` は `dagger`、`katana`、`rapier`、`tyokuto` に対応し、Javaクラス、登録、モデル、翻訳、武器タイプ、能力値、クリエイティブタブ、鞘への納刀設定を一括生成します。`--creative-tab` で表示先タブを指定できます。全武器で通常のiron刀身をグレーの基準色として、`--blade-color` に色名または `#RRGGBB` を指定できます。柄・鍔・頭などの拵えも、本体MODの染色機能で任意色にできます。詳しくは [雛形ジェネレーター](docs/create-addon.md) を参照してください。
 
-生成済みアドオンの `create-weapon` も実行時にこのリポジトリの `commands` ブランチから最新版を取得します。コマンド本体は「Use this template」の複製対象になりません。取得できない場合は前回のキャッシュへ切り替わるため、サンプルを作り直さず利用できます（初回取得のみオンライン接続が必要です）。
+生成済みアドオンの `create-weapon` も実行時にコマンド専用リポジトリから最新版を取得します。コマンド本体は「Use this template」の複製対象になりません。取得できない場合は前回のキャッシュへ切り替わるため、サンプルを作り直さず利用できます（初回取得のみオンライン接続が必要です）。
 
 ### 1. 本体MODの jar（自動で用意される）
 

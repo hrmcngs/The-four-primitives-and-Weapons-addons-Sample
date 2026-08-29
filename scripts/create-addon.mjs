@@ -41,7 +41,7 @@ const EXCLUDES = new Set([
   'libs/local',
   // npm 生成物
   'package-lock.json',
-  // create-weapon の本体は commands ブランチから実行時に取得する
+  // create-weapon の本体はコマンド専用リポジトリから実行時に取得する
 ]);
 
 // 中身置換の対象外（バイナリ等）。拡張子で判定。

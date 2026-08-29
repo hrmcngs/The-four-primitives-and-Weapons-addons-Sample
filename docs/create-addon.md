@@ -61,7 +61,7 @@ node scripts/create-addon.mjs ../my-addon \
 
 ## コマンドの更新方法
 
-`npm run create-weapon` は、実行時にこのサンプルリポジトリの `commands` ブランチから最新版を取得し、`.maw-tools/` にキャッシュしてから実行します。コマンド本体は既定の `main` ブランチに置かないため、GitHub の「Use this template」で作ったリポジトリにはコピーされません。生成済みアドオンを作り直さなくても武器生成コマンドの更新を利用できます。
+`npm run create-weapon` は、実行時に専用の `hrmcngs/The-four-primitives-and-Weapons-addon-commands` リポジトリから最新版を取得し、`.maw-tools/` にキャッシュしてから実行します。コマンド本体はこのテンプレートに置かないため、GitHub の「Use this template」で作ったリポジトリにはコピーされません。生成済みアドオンを作り直さなくても武器生成コマンドの更新を利用できます。
 
 ネットワークに接続できない場合は、前回取得したキャッシュへ自動的に切り替わります。初回だけはオンラインでの取得が必要です。明示的に通信せず実行する場合は次を使います。
 
@@ -73,7 +73,7 @@ npm run create-weapon:offline
 
 ### 新しいコマンドの追加
 
-`commands` ブランチへ `scripts/<コマンド名>.mjs` を追加すると、すでに Use template で作成済みのリポジトリからも次の形式で実行できます。
+コマンド専用リポジトリへ `scripts/<コマンド名>.mjs` を追加すると、すでに Use template で作成済みのリポジトリからも次の形式で実行できます。
 
 ```bash
 ./maw <コマンド名>
