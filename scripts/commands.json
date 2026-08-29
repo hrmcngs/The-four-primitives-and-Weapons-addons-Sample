@@ -1,0 +1,24 @@
+{
+  "commands": [
+    {
+      "name": "create-weapon",
+      "description": "刀・ダガー・細剣・直刀のアイテムを追加",
+      "options": [
+        "--help",
+        "--type",
+        "--id",
+        "--name",
+        "--name-en",
+        "--creative-tab",
+        "--blade-color",
+        "--tsuka-color",
+        "--tsuba-color",
+        "--kasira-color",
+        "--grip-color",
+        "--guard-color",
+        "--pommel-color",
+        "--offline"
+      ]
+    }
+  ]
+}
