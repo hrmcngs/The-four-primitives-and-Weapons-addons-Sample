@@ -5,6 +5,7 @@
     "1": "the_four_primitives_and_weapons:katana_fitting/tsuba/tuba_black",
     "3": "the_four_primitives_and_weapons:katana_fitting/kasira/kasira_black",
     "4": "the_four_primitives_and_weapons:katana_fitting/tsuka/tuka_black",
-    "particle": "the_four_primitives_and_weapons:blade/katana/katanairon3d"
+    "particle": "the_four_primitives_and_weapons:blade/katana/katanairon3d",
+    "habaki": "the_four_primitives_and_weapons:katana_fitting/kasira/kasira_gray"
   }
 }
